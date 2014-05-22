@@ -1,0 +1,26 @@
+EXPORTS
+	PyEval
+	PyExec
+	PyCall
+	PyGetAttr
+	PySetAttr
+	PyDelAttr
+	PyHasAttr
+	PyGetItem
+	PySetItem
+	PyDelItem
+	PyContains
+	PyModule
+	PyTuple
+	PyList
+	PyDict
+	PyToVariant
+	PyToObject
+	PyBuiltin
+	PyIsObject
+	PyRepr
+	PyStr
+	PyLen
+	PyType
+	PyIter
+	PyNext
