@@ -15,4 +15,4 @@ Installer packages can be downloaded from GitHub's 'releases' section.  Please n
 
 There is a tutorial on how to use ExcelPython in the wiki as well as links to other resources.
 
-If you don't find your answer, need more help, find a bug, think of a useful new feature, please create an issue ticket!
+If you don't find your answer, need more help, find a bug, think of a useful new feature, or just want to say how much you love Excel and anything to do with it, please create an issue ticket!
