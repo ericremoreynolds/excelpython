@@ -9,7 +9,7 @@ ExcelPython is a lightweight, easily distributable library for interfacing Excel
 
 ### Installation and troubleshooting
 
-Installer packages can be downloaded from GitHub's 'releases' section.  Please note that the 64-bit installer is to be used only with 64-bit *Office*, note that many 64-bit PCs actually have 32-bit Office installed.
+Installer packages can be downloaded from the 'releases' section.  Please note that the 64-bit installer is to be used only with 64-bit *Office*, note that many 64-bit PCs actually have 32-bit Office installed.
 
 ### Help and documentation
 
