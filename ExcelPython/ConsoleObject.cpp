@@ -11,7 +11,7 @@ PyObject* PyConsoleReadWrite_Write(PyObject* self, PyObject* args)
 	if(!PyArg_ParseTuple(args, "s", &msg))
 		return NULL;
 
-	fprintf(stdout, msg);
+	fputs(msg, stdout);
 
 	Py_RETURN_NONE;
 }

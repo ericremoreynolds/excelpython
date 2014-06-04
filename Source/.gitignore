@@ -1,9 +1,0 @@
-*.suo
-*.sdf
-*.user
-*.opensdf
-/Release27
-/x64
-/Installer
-/Debug
-/Release26

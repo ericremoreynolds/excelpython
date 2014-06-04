@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ExcelPython"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "Eric Reynolds"
 #define MyAppURL "http://sourceforge.net/projects/excelpython/"
 
@@ -20,8 +20,9 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-LicenseFile=.\LICENSE.txt
-OutputDir=.\Installer
+LicenseFile=..\LICENSE
+OutputDir=..\Installer
+SourceDir=..\ExcelPython
 Compression=lzma
 SolidCompression=yes
 

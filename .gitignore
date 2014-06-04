@@ -1,0 +1,7 @@
+*.suo
+*.sdf
+*.user
+*.opensdf
+*.exe
+/ExcelPython/Win32
+/ExcelPython/x64
