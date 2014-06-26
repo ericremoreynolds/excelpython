@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0555 */
-/* at Wed Jun 04 09:53:52 2014
+/* at Thu Jun 26 17:46:45 2014
  */
 /* Compiler settings for ExcelPython.idl:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 7.00.0555 

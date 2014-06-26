@@ -2,8 +2,12 @@
 
 std::string strDefaultPythonPath;
 
+HINSTANCE hModuleDLL;
+
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
+	hModuleDLL = hinstDLL;
+
 	//if(fdwReason == DLL_PROCESS_ATTACH)
 	//{
 
@@ -12,36 +16,80 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	return TRUE;
 }
 
-void EnsurePythonInitialized()
+class ExecutionSentinel
 {
-	static bool initialized = false;
-
-	if(!initialized)
+	static HANDLE GetActCtxHandle()
 	{
-		char filename[MAX_PATH];
-		GetModuleFileNameA(NULL, filename, MAX_PATH);
-		Py_SetProgramName(filename);
-		char* x = Py_GetPythonHome();
-		Py_Initialize();
-		strDefaultPythonPath = Py_GetPath();
-
+		static HANDLE hActCtx = INVALID_HANDLE_VALUE;
+		if(hActCtx == INVALID_HANDLE_VALUE)
 		{
-			// get the default python path
-			PyBorrowedRef sys_path(PySys_GetObject("path"));
-			PyNewRef semicolon(PyString_FromString(";"));
-			PyNewRef str_path(PyObject_CallMethod(semicolon, "join", "(O)", sys_path));
-			strDefaultPythonPath = PyString_AsString(str_path);
+			TCHAR moduleName[MAX_PATH];
+			if(0 == GetModuleFileName(hModuleDLL, moduleName, MAX_PATH))
+				throw Exception() << "GetModuleFileName failed in ExecutionSentinel::GetActCtxHandle";
+
+			ACTCTX actctx;
+			SecureZeroMemory(&actctx, sizeof(actctx));
+			actctx.cbSize = sizeof(actctx);
+			actctx.lpSource = moduleName;
+			actctx.dwFlags = ACTCTX_FLAG_HMODULE_VALID | ACTCTX_FLAG_RESOURCE_NAME_VALID;
+			actctx.hModule = hModuleDLL;
+			actctx.lpResourceName = MAKEINTRESOURCE(ISOLATIONAWARE_MANIFEST_RESOURCE_ID);
+			hActCtx = CreateActCtx(&actctx);
+
+			if(hActCtx == INVALID_HANDLE_VALUE)
+				throw Exception() << "Could not create DLL activation context.";
 		}
-
-		PyNewRef console(PyConsoleReadWrite_New());
-		console.ptr->ob_refcnt += 3;
-		PySys_SetObject("stdout", console);
-		PySys_SetObject("stdin", console);
-		PySys_SetObject("stderr", console);
-
-		initialized = true;
+		return hActCtx;
 	}
-}
+
+	static void EnsurePythonInitialized()
+	{
+		static bool initialized = false;
+
+		if(!initialized)
+		{
+			char filename[MAX_PATH];
+			GetModuleFileNameA(NULL, filename, MAX_PATH);
+			Py_SetProgramName(filename);
+			char* x = Py_GetPythonHome();
+			Py_Initialize();
+			strDefaultPythonPath = Py_GetPath();
+
+			{
+				// get the default python path
+				PyBorrowedRef sys_path(PySys_GetObject("path"));
+				PyNewRef semicolon(PyString_FromString(";"));
+				PyNewRef str_path(PyObject_CallMethod(semicolon, "join", "(O)", sys_path));
+				strDefaultPythonPath = PyString_AsString(str_path);
+			}
+
+			PyNewRef console(PyConsoleReadWrite_New());
+			console.ptr->ob_refcnt += 3;
+			PySys_SetObject("stdout", console);
+			PySys_SetObject("stdin", console);
+			PySys_SetObject("stderr", console);
+
+			initialized = true;
+		}
+	}
+
+	ULONG_PTR ulpCookie;
+
+public:
+	ExecutionSentinel()
+	{
+		if(!ActivateActCtx(GetActCtxHandle(), &this->ulpCookie))
+			throw Exception() << "Could not activate DLL activation context.";
+
+		EnsurePythonInitialized();
+	}
+
+	~ExecutionSentinel()
+	{
+		if(!DeactivateActCtx(0, this->ulpCookie))
+			throw Exception() << "Could not deactivate DLL activation context.";
+	}
+};
 
 void ShowConsole(bool show)
 {
@@ -108,7 +156,7 @@ HRESULT __stdcall PyEval(BSTR xlExpression, VARIANT* xlLocals, VARIANT* xlGlobal
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		SetupPath(xlAddPath, xlPythonPath);
 
@@ -141,7 +189,7 @@ HRESULT __stdcall PyExec(BSTR xlStatement, VARIANT* xlLocals, VARIANT* xlGlobals
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		SetupPath(xlAddPath, xlPythonPath);
 
@@ -170,7 +218,7 @@ HRESULT __stdcall PyTuple(SAFEARRAY** xlElements, VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef tuple(SafeArrayToTuple(*xlElements));
 
@@ -189,7 +237,7 @@ HRESULT __stdcall PyList(SAFEARRAY** xlElements, VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef list(SafeArrayToList(*xlElements));
 
@@ -208,7 +256,7 @@ HRESULT __stdcall PyDict(SAFEARRAY** xlKeyValuePairs, VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef dict(SafeArrayToDict(*xlKeyValuePairs));
 		
@@ -226,7 +274,7 @@ HRESULT __stdcall PyIsObject(VARIANT* xlObject, VARIANT_BOOL* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		switch(xlObject->vt)
 		{
@@ -257,7 +305,7 @@ HRESULT __stdcall PyToObject(VARIANT* xlObject, LONG* xlDimensions, VARIANT* xlR
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject, *xlDimensions));
 
@@ -276,7 +324,7 @@ HRESULT __stdcall PyToVariant(VARIANT* xlObject, LONG* xlDimensions, VARIANT* xl
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 
@@ -325,7 +373,7 @@ HRESULT __stdcall PyBuiltin(BSTR xlMethod, VARIANT* xlArgs, VARIANT* xlKeywordAr
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		std::string strMethod = BStrToStdString(xlMethod);
 
@@ -365,7 +413,7 @@ HRESULT __stdcall PyStr(VARIANT* xlObject, SAFEARRAY** xlFormatArgs, VARIANT* xl
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 
@@ -393,7 +441,7 @@ HRESULT __stdcall IPyObjectImpl::Str(VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef ret(PyObject_Str(this->pObj));
 
@@ -412,7 +460,7 @@ HRESULT __stdcall PyRepr(VARIANT* xlObject, VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 
@@ -433,7 +481,7 @@ HRESULT __stdcall PyLen(VARIANT* xlObject, int* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 
@@ -501,7 +549,7 @@ HRESULT __stdcall PyType(VARIANT* xlObject, VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 
@@ -522,7 +570,7 @@ HRESULT __stdcall PyIter(VARIANT* xlInstance, VARIANT* xlResult)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlInstance));
 		PyNewRef ret(PyObject_GetIter(obj));
@@ -560,7 +608,7 @@ HRESULT __stdcall PyNext(VARIANT* xlIterator, VARIANT* xlElement, VARIANT_BOOL* 
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlIterator));
 
@@ -603,10 +651,10 @@ HRESULT __stdcall IPyObjectImpl::Next(ULONG celt, VARIANT* rgVar, ULONG* pCeltFe
 		if (rgVar == NULL)
 			return E_INVALIDARG;
 
-		for(int k=0; k<celt; k++)
+		for(size_t k=0; k<celt; k++)
 			VariantInit(&rgVar[k]);
 			
-		for(int k=0; k<celt; k++)
+		for(size_t k=0; k<celt; k++)
 		{
 			PyObject* pRet = PyIter_Next(this->pObj);
 			if(NULL == pRet && NULL == PyErr_Occurred())
@@ -635,7 +683,7 @@ HRESULT __stdcall PyCall(VARIANT* xlObject, BSTR xlMethod, VARIANT* xlArgs, VARI
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		if(xlConsole)
 			ShowConsole(true);
@@ -701,7 +749,7 @@ HRESULT __stdcall PyGetAttr(VARIANT* xlObject, BSTR xlAttribute, VARIANT* xlResu
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 
@@ -723,7 +771,7 @@ HRESULT __stdcall PySetAttr(VARIANT* xlObject, BSTR xlAttribute, VARIANT* xlValu
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		PyNewRef val(VariantToPy(xlValue));
@@ -744,7 +792,7 @@ HRESULT __stdcall PyGetItem(VARIANT* xlObject, VARIANT* xlKey, VARIANT* xlResult
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		PyNewRef key(VariantToPy(xlKey));
@@ -766,7 +814,7 @@ HRESULT __stdcall PySetItem(VARIANT* xlObject, VARIANT* xlKey, VARIANT* xlValue)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		PyNewRef key(VariantToPy(xlKey));
@@ -787,7 +835,7 @@ HRESULT __stdcall PyDelItem(VARIANT* xlObject, VARIANT* xlKey)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		PyNewRef key(VariantToPy(xlKey));
@@ -807,7 +855,7 @@ HRESULT __stdcall PyContains(VARIANT* xlObject, VARIANT* xlKey, VARIANT_BOOL* xl
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		PyNewRef key(VariantToPy(xlKey));
@@ -829,7 +877,7 @@ HRESULT __stdcall PyDelAttr(VARIANT* xlObject, BSTR xlKey)
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		std::string key = BStrToStdString(xlKey);
@@ -849,7 +897,7 @@ HRESULT __stdcall PyHasAttr(VARIANT* xlObject, BSTR xlKey, VARIANT_BOOL* xlResul
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		PyNewRef obj(VariantToPy(xlObject));
 		std::string key = BStrToStdString(xlKey);
@@ -871,7 +919,7 @@ HRESULT __stdcall PyModule(BSTR xlModule, VARIANT_BOOL& reload, BSTR xlAddPath, 
 {
 	try
 	{
-		EnsurePythonInitialized();
+		ExecutionSentinel exe;
 
 		SetupPath(xlAddPath, xlPythonPath);
 

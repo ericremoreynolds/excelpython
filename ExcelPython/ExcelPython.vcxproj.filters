@@ -26,4 +26,7 @@
   <ItemGroup>
     <Midl Include="ExcelPython.idl" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="ExcelPython.manifest" />
+  </ItemGroup>
 </Project>

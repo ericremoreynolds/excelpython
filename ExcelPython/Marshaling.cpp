@@ -61,6 +61,31 @@ PyObject* BStrToPyString(BSTR str)
 	return ret;
 }
 
+PyObject* IUnknownToPyWin32(IUnknown* pUnk)
+{
+	PyNewRef pythoncom(PyImport_ImportModule("pythoncom"));				// import pythoncom
+	PyNewRef w32client(PyImport_ImportModule("win32com.client"));		// import win32com.client
+#ifdef _WIN64
+	PyNewRef address(PyLong_FromLongLong((LONG_PTR) pUnk));
+#else
+	PyNewRef address(PyInt_FromLong((LONG_PTR) pUnk));
+#endif
+	PyNewRef iunk(PyObject_CallMethod(pythoncom, "ObjectFromAddress", "O", address));
+	PyNewRef iid_idispatch(PyObject_GetAttrString(pythoncom, "IID_IDispatch"));
+	PyRef idisp;
+	try
+	{
+		idisp = PyNewRef(PyObject_CallMethod(iunk, "QueryInterface", "O", iid_idispatch));
+	}
+	catch(PythonException&)
+	{
+		return iunk.detach();
+	}
+
+	PyNewRef disp(PyObject_CallMethod(w32client, "Dispatch", "O", idisp));
+	return disp.detach();
+}
+
 PyObject* VariantToPy(VARIANT* var, int dims)
 {
 	switch(var->vt)
@@ -137,14 +162,11 @@ PyObject* VariantToPy(VARIANT* var, int dims)
 		{
 			IUnknown* pUnk = (var->vt & VT_BYREF) ? *var->ppunkVal : var->punkVal;
 			IPyObjectImplPtr pPyObject;
-			IProgressCallbackPtr pProgressCallback;
 
 			if(NULL != (pPyObject = pUnk))
 				return pPyObject->GetNewRef();
-			else if(NULL != (pProgressCallback = pUnk))
-				return PyProgressCallback_New(pProgressCallback);
 			else
-				throw Exception() << "Cannot convert variant to Python object.";
+				return IUnknownToPyWin32(pUnk);
 		}
 
 	case VT_DISPATCH:
@@ -152,16 +174,13 @@ PyObject* VariantToPy(VARIANT* var, int dims)
 		{
 			IDispatch* pDisp = (var->vt & VT_BYREF) ? *var->ppdispVal : var->pdispVal;
 			IPyObjectImplPtr pPyObject;
-			IProgressCallbackPtr pProgressCallback;
 
 			if(NULL != (pPyObject = pDisp))
 				return pPyObject->GetNewRef();
-			else if(NULL != (pProgressCallback = pDisp))
-				return PyProgressCallback_New(pProgressCallback);
 			else
 			{
-				PyNewRef obj(PyDispatch_New(pDisp));
-				return obj.detach();
+				IUnknownPtr pUnk = pDisp;
+				return IUnknownToPyWin32(pUnk);
 			}
 		}
 

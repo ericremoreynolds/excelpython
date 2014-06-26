@@ -722,79 +722,79 @@ PyObject* PyDispatch_New(IDispatch* pDispatch)
 }
 
 
-
-/******************* IStatusCallback ******************/
-
-struct PyProgressCallback
-{
-	PyObject_HEAD;
-	IProgressCallback* pCallback;
-};
-
-PyTypeObject* PyProgressCallback_Type();
-
-PyObject* PyProgressCallback_New(IProgressCallback* pCallback)
-{
-	PyProgressCallback* obj = PyObject_New(PyProgressCallback, PyProgressCallback_Type());
-	obj->pCallback = pCallback;
-	obj->pCallback->AddRef();
-	return (PyObject*) obj;	
-}
-
-void PyProgressCallback_Dealloc(PyProgressCallback* self)
-{
-	self->pCallback->Release();
-}
-
-PyObject* PyProgressCallback_Call(PyProgressCallback* self, PyTupleObject* args, PyDictObject* kwargs)
-{
-	if(PyTuple_GET_SIZE(args) != 1)
-	{
-		PyErr_SetString(PyExc_RuntimeError, "Expected 1 argument.");
-		return NULL;
-	}
-
-	PyBorrowedRef objStatus(PyTuple_GET_ITEM(args, 0), false);
-	if(!PyString_Check(objStatus))
-	{
-		PyErr_SetString(PyExc_RuntimeError, "Expected string argument.");
-		return NULL;
-	}
-
-	BSTR bstrStatus = CStrToBStr(PyString_AsString(objStatus));
-	HRESULT hr = self->pCallback->SetStatus(&bstrStatus);
-	SysFreeString(bstrStatus);
-
-	if(FAILED(hr))
-	{
-		PyErr_SetString(PyExc_RuntimeError, "COM error.");
-		return NULL;
-	}
-
-	Py_RETURN_NONE;
-}
-
-PyTypeObject* PyProgressCallback_Type()
-{
-	static bool ready = false;
-	static PyTypeObject type;
-	if(!ready)
-	{
-		memset(&type, 0, sizeof(PyTypeObject));
-		type.ob_type = &PyType_Type;
-		type.ob_refcnt = 1;
-		type.tp_name = "Progress Callback";
-		type.tp_basicsize = sizeof(PyProgressCallback);
-		type.tp_flags = Py_TPFLAGS_DEFAULT;
-		type.tp_doc = "Progress Callback";
-		type.tp_call = (ternaryfunc) PyProgressCallback_Call;
-		type.tp_dealloc = (destructor) PyProgressCallback_Dealloc;
-
-		if(0 != PyType_Ready(&type))
-			throw PythonException();
-
-		ready = true;
-	}
-
-	return &type;
-}
+//
+///******************* IStatusCallback ******************/
+//
+//struct PyProgressCallback
+//{
+//	PyObject_HEAD;
+//	IProgressCallback* pCallback;
+//};
+//
+//PyTypeObject* PyProgressCallback_Type();
+//
+//PyObject* PyProgressCallback_New(IProgressCallback* pCallback)
+//{
+//	PyProgressCallback* obj = PyObject_New(PyProgressCallback, PyProgressCallback_Type());
+//	obj->pCallback = pCallback;
+//	obj->pCallback->AddRef();
+//	return (PyObject*) obj;	
+//}
+//
+//void PyProgressCallback_Dealloc(PyProgressCallback* self)
+//{
+//	self->pCallback->Release();
+//}
+//
+//PyObject* PyProgressCallback_Call(PyProgressCallback* self, PyTupleObject* args, PyDictObject* kwargs)
+//{
+//	if(PyTuple_GET_SIZE(args) != 1)
+//	{
+//		PyErr_SetString(PyExc_RuntimeError, "Expected 1 argument.");
+//		return NULL;
+//	}
+//
+//	PyBorrowedRef objStatus(PyTuple_GET_ITEM(args, 0), false);
+//	if(!PyString_Check(objStatus))
+//	{
+//		PyErr_SetString(PyExc_RuntimeError, "Expected string argument.");
+//		return NULL;
+//	}
+//
+//	BSTR bstrStatus = CStrToBStr(PyString_AsString(objStatus));
+//	HRESULT hr = self->pCallback->SetStatus(&bstrStatus);
+//	SysFreeString(bstrStatus);
+//
+//	if(FAILED(hr))
+//	{
+//		PyErr_SetString(PyExc_RuntimeError, "COM error.");
+//		return NULL;
+//	}
+//
+//	Py_RETURN_NONE;
+//}
+//
+//PyTypeObject* PyProgressCallback_Type()
+//{
+//	static bool ready = false;
+//	static PyTypeObject type;
+//	if(!ready)
+//	{
+//		memset(&type, 0, sizeof(PyTypeObject));
+//		type.ob_type = &PyType_Type;
+//		type.ob_refcnt = 1;
+//		type.tp_name = "Progress Callback";
+//		type.tp_basicsize = sizeof(PyProgressCallback);
+//		type.tp_flags = Py_TPFLAGS_DEFAULT;
+//		type.tp_doc = "Progress Callback";
+//		type.tp_call = (ternaryfunc) PyProgressCallback_Call;
+//		type.tp_dealloc = (destructor) PyProgressCallback_Dealloc;
+//
+//		if(0 != PyType_Ready(&type))
+//			throw PythonException();
+//
+//		ready = true;
+//	}
+//
+//	return &type;
+//}

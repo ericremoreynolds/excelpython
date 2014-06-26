@@ -130,7 +130,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXCELPYTHON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ISOLATION_CONTEXT_AWARE;_DEBUG;_WINDOWS;_USRDLL;EXCELPYTHON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>c:\python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -141,12 +141,17 @@
       <AdditionalLibraryDirectories>c:\python27\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <MidlCommandFile>ExcelPython.idl</MidlCommandFile>
+      <AdditionalManifestDependencies>
+      </AdditionalManifestDependencies>
     </Link>
     <Midl />
     <PostBuildEvent>
       <Command>
       </Command>
     </PostBuildEvent>
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)ExcelPython.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -167,6 +172,9 @@
       <MidlCommandFile>ExcelPython.idl</MidlCommandFile>
     </Link>
     <Midl />
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)ExcelPython.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release27|Win32'">
     <ClCompile>
@@ -176,7 +184,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXCELPYTHON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ISOLATION_AWARE_ENABLED;NDEBUG;_WINDOWS;_USRDLL;EXCELPYTHON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>c:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -191,6 +199,9 @@
       <MidlCommandFile>ExcelPython.idl</MidlCommandFile>
     </Link>
     <Midl />
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)ExcelPython.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release27|x64'">
     <ClCompile>
@@ -215,6 +226,9 @@
       <MidlCommandFile>ExcelPython.idl</MidlCommandFile>
     </Link>
     <Midl />
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)ExcelPython.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release26|Win32'">
     <ClCompile>
@@ -224,7 +238,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXCELPYTHON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;ISOLATION_AWARE_ENABLED;NDEBUG;_WINDOWS;_USRDLL;EXCELPYTHON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>c:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -242,6 +256,9 @@
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
     </Midl>
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)ExcelPython.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release26|x64'">
     <ClCompile>
@@ -269,6 +286,9 @@
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
     </Midl>
+    <Manifest>
+      <AdditionalManifestFiles>$(ProjectDir)ExcelPython.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleObject.cpp" />
@@ -308,6 +328,9 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/DPYTHON_TARGET=27 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/DPYTHON_TARGET=27 %(AdditionalOptions)</AdditionalOptions>
     </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="ExcelPython.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
