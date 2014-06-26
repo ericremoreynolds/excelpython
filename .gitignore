@@ -6,3 +6,5 @@
 /ExcelPython/Win32
 /ExcelPython/x64
 *.aps
+ExcelPython_h.h
+ExcelPython_i.c
