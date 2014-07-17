@@ -1,10 +1,9 @@
+Debug/
+Release/
 *.suo
-*.sdf
 *.user
 *.opensdf
-*.exe
-/ExcelPython/Win32
-/ExcelPython/x64
-*.aps
-ExcelPython_h.h
-ExcelPython_i.c
+*.sdf
+*.pyo
+*.pyc
+*.dll
