@@ -2,9 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ExcelPython"
-#define MyAppVersion "1.1.1"
+#define MyAppVersion "1.1.2"
 #define MyAppPublisher "Eric Reynolds"
-#define MyAppURL "http://sourceforge.net/projects/excelpython/"
+#define MyAppURL "https://github.com/ericremoreynolds/excelpython"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
