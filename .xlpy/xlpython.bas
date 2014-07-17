@@ -3,13 +3,13 @@ Option Private Module
 Option Explicit
 
 #If win64 Then
-    Const XLPyDLLName As String = "xlpython64-0.0.4.dll"
-    Declare Function XLPyDLLActivate Lib "xlpython64-0.0.4.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
-    Declare Function XLPyDLLNDims Lib "xlpython64-0.0.4.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+    Const XLPyDLLName As String = "xlpython64-2.0.0.dll"
+    Declare Function XLPyDLLActivate Lib "xlpython64-2.0.0.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
+    Declare Function XLPyDLLNDims Lib "xlpython64-2.0.0.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
 #Else
-    Private Const XLPyDLLName As String = "xlpython32-0.0.4.dll"
-    Private Declare Function XLPyDLLActivate Lib "xlpython32-0.0.4.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
-    Private Declare Function XLPyDLLNDims Lib "xlpython32-0.0.4.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+    Private Const XLPyDLLName As String = "xlpython32-2.0.0.dll"
+    Private Declare Function XLPyDLLActivate Lib "xlpython32-2.0.0.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
+    Private Declare Function XLPyDLLNDims Lib "xlpython32-2.0.0.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
 #End If
 Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
 
