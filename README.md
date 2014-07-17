@@ -1,13 +1,15 @@
 xlpython
 ========
 
-To get started:
+### Get started
+
 * Download the latest release zip
 * Unzip it into the folder containing your workbook (this will create the `.xlpy` folder)
 * Import the module `.xlpy\xlpython.bas` into your workbook
+
 and you're set! No registration or typelibs. All that is needed is Python with PyWin32 installed.
 
-```
+```vb.net
 Sub test1()
     MsgBox Py.Str(Py.Eval("1+2"))
 End Sub
@@ -25,3 +27,15 @@ Sub test3()
     MsgBox Py.Str(Py.Call(m, "MyFunction", Py.Tuple(1, 2, 3)))
 End Sub
 ```
+
+### About xlpython
+
+xlpython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library.
+
+xlpython is a rewrite of an existing project [ExcelPython](http://github.com/ericremoreynolds/excelpython), what's new is that its inner workings are now based on new approach which is more robust and configurable (the technical details: Python runs in an out-of-process and communication happens over COM). 
+
+### Help me!
+
+Check out the [docs](docs/) folder for tutorials to help you get started and links to other resources.
+
+If you don't find your answer, need more help, find a bug, think of a useful new feature, or just want to give some feedback by letting me and everyone else know what you're doing with xlpython, please create an issue ticket!
