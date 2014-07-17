@@ -8,11 +8,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	hModuleDLL = hinstDLL;
 
-	//if(fdwReason == DLL_PROCESS_ATTACH)
-	//{
-
-	//}
-
 	return TRUE;
 }
 
@@ -23,6 +18,8 @@ class ExecutionSentinel
 		static HANDLE hActCtx = INVALID_HANDLE_VALUE;
 		if(hActCtx == INVALID_HANDLE_VALUE)
 		{
+			LogCtx log("ExecutionSentinel::GetActCtxHandle");
+
 			TCHAR moduleName[MAX_PATH];
 			if(0 == GetModuleFileName(hModuleDLL, moduleName, MAX_PATH))
 				throw Exception() << "GetModuleFileName failed in ExecutionSentinel::GetActCtxHandle";
@@ -48,12 +45,17 @@ class ExecutionSentinel
 
 		if(!initialized)
 		{
+			LogCtx log("ExecutionSentinel::EnsurePythonInitialized");
+
 			char filename[MAX_PATH];
 			GetModuleFileNameA(NULL, filename, MAX_PATH);
+			log % "GetModuleFileNameA returned " << filename << ", calling Py_SetProgramName\n";
 			Py_SetProgramName(filename);
 			char* x = Py_GetPythonHome();
+			log % "Py_GetPythonHome returned " << x << ", calling Py_Initialize\n";
 			Py_Initialize();
 			strDefaultPythonPath = Py_GetPath();
+			log % "Py_GetPath returned " << strDefaultPythonPath << "\n";
 
 			{
 				// get the default python path
@@ -61,6 +63,8 @@ class ExecutionSentinel
 				PyNewRef semicolon(PyString_FromString(";"));
 				PyNewRef str_path(PyObject_CallMethod(semicolon, "join", "(O)", sys_path));
 				strDefaultPythonPath = PyString_AsString(str_path);
+
+				log % "sys.path = " << strDefaultPythonPath << "\n";
 			}
 
 			PyNewRef console(PyConsoleReadWrite_New());
@@ -68,6 +72,7 @@ class ExecutionSentinel
 			PySys_SetObject("stdout", console);
 			PySys_SetObject("stdin", console);
 			PySys_SetObject("stderr", console);
+			log % "Console set up\n";
 
 			initialized = true;
 		}
@@ -93,6 +98,8 @@ public:
 
 void ShowConsole(bool show)
 {
+	LogCtx log("ShowConsole");
+
 	if(show)
 	{
 		AllocConsole();
@@ -116,6 +123,8 @@ void ShowConsole(bool show)
 
 HRESULT RaiseError(const std::string& msg)
 {
+	LogCtx log("RaiseError");
+
 	ICreateErrorInfoPtr pCreateErrInfo;
 	CreateErrorInfo(&pCreateErrInfo);
 
@@ -140,6 +149,8 @@ inline bool IsMissing(VARIANT* var)
 
 void SetupPath(BSTR xlAddPath, BSTR xlPythonPath)
 {
+	LogCtx log("SetupPath");
+
 	std::string strPath;
 	if(0 != SysStringLen(xlPythonPath))
 		strPath = BStrToStdString(xlPythonPath);
@@ -154,8 +165,11 @@ void SetupPath(BSTR xlAddPath, BSTR xlPythonPath)
 
 HRESULT __stdcall PyEval(BSTR xlExpression, VARIANT* xlLocals, VARIANT* xlGlobals, BSTR xlAddPath, BSTR xlPythonPath, IPyObj** xlResult)
 {
+	LogCtx log("PyEval");
+
 	try
 	{
+
 		ExecutionSentinel exe;
 
 		SetupPath(xlAddPath, xlPythonPath);
@@ -187,6 +201,8 @@ HRESULT __stdcall PyEval(BSTR xlExpression, VARIANT* xlLocals, VARIANT* xlGlobal
 
 HRESULT __stdcall PyExec(BSTR xlStatement, VARIANT* xlLocals, VARIANT* xlGlobals, BSTR xlAddPath, BSTR xlPythonPath)
 {
+	LogCtx log("PyExec");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -216,6 +232,8 @@ HRESULT __stdcall PyExec(BSTR xlStatement, VARIANT* xlLocals, VARIANT* xlGlobals
 
 HRESULT __stdcall PyTuple(SAFEARRAY** xlElements, VARIANT* xlResult)
 {
+	LogCtx log("PyTuple");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -235,6 +253,8 @@ HRESULT __stdcall PyTuple(SAFEARRAY** xlElements, VARIANT* xlResult)
 
 HRESULT __stdcall PyList(SAFEARRAY** xlElements, VARIANT* xlResult)
 {
+	LogCtx log("PyList");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -254,6 +274,8 @@ HRESULT __stdcall PyList(SAFEARRAY** xlElements, VARIANT* xlResult)
 
 HRESULT __stdcall PyDict(SAFEARRAY** xlKeyValuePairs, VARIANT* xlResult)
 {
+	LogCtx log("PyDict");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -303,6 +325,8 @@ HRESULT __stdcall PyIsObject(VARIANT* xlObject, VARIANT_BOOL* xlResult)
 
 HRESULT __stdcall PyToObject(VARIANT* xlObject, LONG* xlDimensions, VARIANT* xlResult)
 {
+	LogCtx log("PyToObject");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -322,6 +346,8 @@ HRESULT __stdcall PyToObject(VARIANT* xlObject, LONG* xlDimensions, VARIANT* xlR
 
 HRESULT __stdcall PyToVariant(VARIANT* xlObject, LONG* xlDimensions, VARIANT* xlResult)
 {
+	LogCtx log("PyToVariant");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -371,6 +397,8 @@ HRESULT __stdcall IPyObjectImpl::Var(LONG* xlDimensions, VARIANT* xlResult)
 
 HRESULT __stdcall PyBuiltin(BSTR xlMethod, VARIANT* xlArgs, VARIANT* xlKeywordArgs, VARIANT* xlResult)
 {
+	LogCtx log("PyBuiltin");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -411,6 +439,8 @@ HRESULT __stdcall PyBuiltin(BSTR xlMethod, VARIANT* xlArgs, VARIANT* xlKeywordAr
 
 HRESULT __stdcall PyStr(VARIANT* xlObject, SAFEARRAY** xlFormatArgs, VARIANT* xlResult)
 {
+	LogCtx log("PyStr");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -458,6 +488,8 @@ HRESULT __stdcall IPyObjectImpl::Str(VARIANT* xlResult)
 
 HRESULT __stdcall PyRepr(VARIANT* xlObject, VARIANT* xlResult)
 {
+	LogCtx log("PyRepr");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -479,6 +511,8 @@ HRESULT __stdcall PyRepr(VARIANT* xlObject, VARIANT* xlResult)
 
 HRESULT __stdcall PyLen(VARIANT* xlObject, int* xlResult)
 {
+	LogCtx log("PyLen");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -547,6 +581,8 @@ HRESULT __stdcall IPyObjectImpl::get_Count(LONG* xlResult)
 
 HRESULT __stdcall PyType(VARIANT* xlObject, VARIANT* xlResult)
 {
+	LogCtx log("PyType");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -568,6 +604,8 @@ HRESULT __stdcall PyType(VARIANT* xlObject, VARIANT* xlResult)
 
 HRESULT __stdcall PyIter(VARIANT* xlInstance, VARIANT* xlResult)
 {
+	LogCtx log("PyIter");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -606,6 +644,8 @@ HRESULT __stdcall IPyObjectImpl::get__NewEnum(IUnknown** ppUnknown)
 
 HRESULT __stdcall PyNext(VARIANT* xlIterator, VARIANT* xlElement, VARIANT_BOOL* xlResult)
 {
+	LogCtx log("PyNext");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -681,6 +721,8 @@ HRESULT __stdcall IPyObjectImpl::Next(ULONG celt, VARIANT* rgVar, ULONG* pCeltFe
 
 HRESULT __stdcall PyCall(VARIANT* xlObject, BSTR xlMethod, VARIANT* xlArgs, VARIANT* xlKeywordArgs, bool xlConsole, VARIANT* xlResult)
 {
+	LogCtx log("PyCall");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -747,6 +789,8 @@ HRESULT __stdcall PyCall(VARIANT* xlObject, BSTR xlMethod, VARIANT* xlArgs, VARI
 
 HRESULT __stdcall PyGetAttr(VARIANT* xlObject, BSTR xlAttribute, VARIANT* xlResult)
 {
+	LogCtx log("PyGetAttr");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -769,6 +813,8 @@ HRESULT __stdcall PyGetAttr(VARIANT* xlObject, BSTR xlAttribute, VARIANT* xlResu
 
 HRESULT __stdcall PySetAttr(VARIANT* xlObject, BSTR xlAttribute, VARIANT* xlValue)
 {
+	LogCtx log("PySetAttr");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -790,6 +836,8 @@ HRESULT __stdcall PySetAttr(VARIANT* xlObject, BSTR xlAttribute, VARIANT* xlValu
 
 HRESULT __stdcall PyGetItem(VARIANT* xlObject, VARIANT* xlKey, VARIANT* xlResult)
 {
+	LogCtx log("PyGetItem");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -812,6 +860,8 @@ HRESULT __stdcall PyGetItem(VARIANT* xlObject, VARIANT* xlKey, VARIANT* xlResult
 
 HRESULT __stdcall PySetItem(VARIANT* xlObject, VARIANT* xlKey, VARIANT* xlValue)
 {
+	LogCtx log("PySetItem");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -833,6 +883,8 @@ HRESULT __stdcall PySetItem(VARIANT* xlObject, VARIANT* xlKey, VARIANT* xlValue)
 
 HRESULT __stdcall PyDelItem(VARIANT* xlObject, VARIANT* xlKey)
 {
+	LogCtx log("PyDelItem");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -853,6 +905,8 @@ HRESULT __stdcall PyDelItem(VARIANT* xlObject, VARIANT* xlKey)
 
 HRESULT __stdcall PyContains(VARIANT* xlObject, VARIANT* xlKey, VARIANT_BOOL* xlResult)
 {
+	LogCtx log("PyContains");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -875,6 +929,8 @@ HRESULT __stdcall PyContains(VARIANT* xlObject, VARIANT* xlKey, VARIANT_BOOL* xl
 
 HRESULT __stdcall PyDelAttr(VARIANT* xlObject, BSTR xlKey)
 {
+	LogCtx log("PyDelAttr");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -895,6 +951,8 @@ HRESULT __stdcall PyDelAttr(VARIANT* xlObject, BSTR xlKey)
 
 HRESULT __stdcall PyHasAttr(VARIANT* xlObject, BSTR xlKey, VARIANT_BOOL* xlResult)
 {
+	LogCtx log("PyHasAttr");
+
 	try
 	{
 		ExecutionSentinel exe;
@@ -917,6 +975,8 @@ HRESULT __stdcall PyHasAttr(VARIANT* xlObject, BSTR xlKey, VARIANT_BOOL* xlResul
 
 HRESULT __stdcall PyModule(BSTR xlModule, VARIANT_BOOL& reload, BSTR xlAddPath, BSTR xlPythonPath, VARIANT* xlResult)
 {
+	LogCtx log("PyModule");
+
 	try
 	{
 		ExecutionSentinel exe;

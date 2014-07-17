@@ -9,6 +9,7 @@
     <ClCompile Include="IPyObject.cpp" />
     <ClCompile Include="ConsoleObject.cpp" />
     <ClCompile Include="ExcelPython_i.c" />
+    <ClCompile Include="Logging.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExcelPython.h" />
@@ -19,6 +20,7 @@
     <ClInclude Include="IPyObject.h" />
     <ClInclude Include="ConsoleObject.h" />
     <ClInclude Include="ExcelPython_h.h" />
+    <ClInclude Include="Logging.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ExcelPython.def" />

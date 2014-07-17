@@ -7,6 +7,8 @@ struct PyConsoleReadWrite
 
 PyObject* PyConsoleReadWrite_Write(PyObject* self, PyObject* args)
 {
+	LogCtx ctx("PyConsoleReadWrite_Write");
+
 	char* msg;
 	if(!PyArg_ParseTuple(args, "s", &msg))
 		return NULL;
@@ -18,6 +20,8 @@ PyObject* PyConsoleReadWrite_Write(PyObject* self, PyObject* args)
 
 PyObject* PyConsoleReadWrite_Flush(PyObject* self, PyObject* args)
 {
+	LogCtx ctx("PyConsoleReadWrite_Flush");
+
 	fflush(stdout);
 
 	Py_RETURN_NONE;
@@ -25,6 +29,8 @@ PyObject* PyConsoleReadWrite_Flush(PyObject* self, PyObject* args)
 
 PyObject* PyConsoleReadWrite_ReadLine(PyObject* self, PyObject* args)
 {
+	LogCtx ctx("PyConsoleReadWrite_ReadLine");
+
 	static char buf[4096];
 	fgets(buf, 4096, stdin);
 	
@@ -59,6 +65,8 @@ PyTypeObject* PyConsoleReadWrite_Type()
 	static PyTypeObject type;
 	if(!ready)
 	{
+		LogCtx ctx("PyConsoleReadWrite_Type");
+
 		memset(&type, 0, sizeof(PyTypeObject));
 		type.ob_type = &PyType_Type;
 		type.ob_refcnt = 1;
@@ -79,6 +87,8 @@ PyTypeObject* PyConsoleReadWrite_Type()
 
 PyObject* PyConsoleReadWrite_New()
 {
+	LogCtx ctx("PyConsoleReadWrite_New");
+
 	PyConsoleReadWrite* obj = PyObject_New(PyConsoleReadWrite, PyConsoleReadWrite_Type());
 	return (PyObject*) obj;	
 }

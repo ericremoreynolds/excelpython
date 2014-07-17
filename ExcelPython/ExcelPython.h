@@ -2,12 +2,17 @@
 
 #include <windows.h>
 #include <comdef.h>
+#include <fstream>
+#include <tchar.h>
+#include "Logging.h"
 #include "Python.h"
 #include "Exception.h"
 
 #include "ExcelPython_h.h"
 
 #include "ConsoleObject.h"
+
+extern HINSTANCE hModuleDLL;
 
 class PyRef
 {

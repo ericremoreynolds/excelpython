@@ -5,6 +5,8 @@
 
 void StrToVariant(const std::string& str, VARIANT* var)
 {
+	LogCtx log("StrToVariant");
+
 	VariantClear(var);
 
 	int sz = (int) str.length() + 1;
@@ -17,6 +19,8 @@ void StrToVariant(const std::string& str, VARIANT* var)
 
 std::string WCharToStdString(const wchar_t* str)
 {
+	LogCtx log("WCharToStdString");
+
 	int len = (int) wcslen(str);
 	boost::scoped_array<char> narrow(new char[len+1]);
 	WideCharToMultiByte(CP_ACP, 0, str, len, narrow.get(), len+1, "?", NULL);
@@ -27,6 +31,8 @@ std::string WCharToStdString(const wchar_t* str)
 
 std::string BStrToStdString(BSTR str)
 {
+	LogCtx log("BStrToStdString");
+
 	BOOL bUsedDefaultChar;
 	int len = (int) SysStringLen(str);
 	boost::scoped_array<char> narrow(new char[len+1]);
@@ -38,6 +44,8 @@ std::string BStrToStdString(BSTR str)
 
 BSTR CStrToBStr(const char* str)
 {
+	LogCtx log("CStrToBStr");
+
 	int sz = (int) strlen(str) + 1;
 	OLECHAR* wide = new OLECHAR[sz];
 	MultiByteToWideChar(CP_ACP, 0, str, sz * sizeof(OLECHAR), wide, sz);
@@ -49,6 +57,8 @@ BSTR CStrToBStr(const char* str)
 
 PyObject* BStrToPyString(BSTR str)
 {
+	LogCtx log("BStrToPyString");
+
 	BOOL bUsedDefaultChar;
 	int len = (int) SysStringLen(str);
 	char* narrow = new char[len+1];
@@ -63,6 +73,8 @@ PyObject* BStrToPyString(BSTR str)
 
 PyObject* IUnknownToPyWin32(IUnknown* pUnk)
 {
+	LogCtx log("IUnknownToPyWin32");
+
 	PyNewRef pythoncom(PyImport_ImportModule("pythoncom"));				// import pythoncom
 	PyNewRef w32client(PyImport_ImportModule("win32com.client"));		// import win32com.client
 #ifdef _WIN64
@@ -88,6 +100,8 @@ PyObject* IUnknownToPyWin32(IUnknown* pUnk)
 
 PyObject* VariantToPy(VARIANT* var, int dims)
 {
+	LogCtx log("VariantToPy");
+
 	switch(var->vt)
 	{
 	case VT_EMPTY:
@@ -200,6 +214,8 @@ int SafeArrayLength(SAFEARRAY* pSA)
 
 PyObject* SafeArrayToTuple(SAFEARRAY* pSA)
 {
+	LogCtx log("SafeArrayToTuple");
+
 	if(pSA->cDims != 1)
 		throw Exception() << "Array is not one-dimensional while converting to Python tuple.";
 
@@ -219,6 +235,8 @@ PyObject* SafeArrayToTuple(SAFEARRAY* pSA)
 
 PyObject* SafeArrayToList(SAFEARRAY* pSA)
 {
+	LogCtx log("SafeArrayToList");
+
 	if(pSA->cDims != 1)
 		throw Exception() << "Array is not one-dimensional while converting to Python list.";
 
@@ -237,6 +255,8 @@ PyObject* SafeArrayToList(SAFEARRAY* pSA)
 
 PyObject* VariantToTuple(VARIANT* var)
 {
+	LogCtx log("VariantToTuple");
+
 	if(var->vt != (VT_VARIANT | VT_ARRAY))
 		throw Exception() << "Variant is not array of variants while converting to Python tuple.";
 
@@ -245,6 +265,8 @@ PyObject* VariantToTuple(VARIANT* var)
 
 PyObject* SafeArrayToDict(SAFEARRAY* pSA)
 {
+	LogCtx log("SafeArrayToDict");
+
 	switch(pSA->cDims)
 	{
 	case 1:
@@ -302,6 +324,8 @@ PyObject* SafeArrayToDict(SAFEARRAY* pSA)
 
 PyObject* VariantToDict(VARIANT* var)
 {
+	LogCtx log("VariantToDict");
+
 	if(var->vt != (VT_VARIANT | VT_ARRAY))
 		throw Exception() << "Variant is not array of variants while converting to Python dictionary.";
 
@@ -310,6 +334,8 @@ PyObject* VariantToDict(VARIANT* var)
 
 PyObject* VariantToList(VARIANT* var, int dims)
 {
+	LogCtx log("VariantToList");
+
 	if(var->vt != (VT_VARIANT | VT_ARRAY) && var->vt != (VT_VARIANT | VT_ARRAY | VT_BYREF))
 		throw Exception() << "Variant is not array of variants while converting to Python list.";
 
@@ -393,6 +419,8 @@ void WrapPyToIPyObject(PyObject* obj, IPyObj** pPy)
 
 void ConvertPyToVariant(PyObject* obj, VARIANT* var, bool deep, int dims)
 {
+	LogCtx log("ConvertPyToVariant");
+
 	VariantClear(var);
 
 	if(obj == NULL || obj == Py_None)

@@ -296,6 +296,7 @@
     <ClCompile Include="ExcelPython_i.c" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="IPyObject.cpp" />
+    <ClCompile Include="Logging.cpp" />
     <ClCompile Include="Marshaling.cpp" />
     <ClCompile Include="Persistence.cpp" />
     <ClCompile Include="PyDispatch.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="ExcelPython_h.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="IPyObject.h" />
+    <ClInclude Include="Logging.h" />
     <ClInclude Include="Marshaling.h" />
     <ClInclude Include="Persistence.h" />
     <ClInclude Include="PyDispatch.h" />
