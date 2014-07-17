@@ -1,5 +1,4 @@
-xlpython
-========
+# ExcelPython v2
 
 ### Get started
 
@@ -28,11 +27,11 @@ Sub test3()
 End Sub
 ```
 
-### About xlpython
+### About ExcelPython
 
-xlpython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library.
+ExcelPython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library.
 
-xlpython is a rewrite of an existing project [ExcelPython](http://github.com/ericremoreynolds/excelpython), what's new is that its inner workings are now based on new approach which is more robust and configurable (the technical details: Python runs in an out-of-process and communication happens over COM). 
+v2 is a major rewrite of the previous ExcelPython, moving over to a new approach which is more robust and configurable - and importantly should eliminate all those irritating DLL not found problems! The technical details: Python now runs out-of-process and communication happens over COM.
 
 ### Help me!
 
