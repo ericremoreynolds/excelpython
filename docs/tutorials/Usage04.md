@@ -134,7 +134,7 @@ On Error GoTo fail:
     ' Python equivalent: result_list = result_array.tolist()
     Set result_list = Py.Call(result_array, "tolist")
 
-    PyXLMult = Py.Var(result_list, 2)
+    PyXLMult = Py.Var(result_list)
     Exit Function
 
 fail:
