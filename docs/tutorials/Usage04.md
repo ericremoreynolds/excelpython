@@ -5,7 +5,7 @@ If you pass a VBA object to an ExcelPython function that expects a Python object
 
 That's why you can do the following
 
-```vb.net
+```
 ?Py.Str(Range("A1:C1").Value2)
 ((3.0, 1.0, 2.0),)
 ```
@@ -14,14 +14,14 @@ The function `Py.Str` applies the Python `str` function to whatever object you p
 
 In this specific example, the object that gets passed is a VBA array:
 
-```vb.net
+```
 ?TypeName(Range("A1:C1").Value2)
 Variant()
 ```
 
 Specifically, it's a 1x3 two-dimensional array:
 
-```vb.net
+```
 ?UBound(Range("A1:C1").Value2,1) & " to " & LBound(Range("A1:C1").Value2, 1)
 1 to 1
 ?UBound(Range("A1:C1").Value2,2) & " to " & LBound(Range("A1:C1").Value2, 2)
@@ -30,7 +30,7 @@ Specifically, it's a 1x3 two-dimensional array:
   
 This is an 'oddity' of Excel's VBA model - the values of 1x1 ranges are scalars:
 
-```vb.net
+```
 ?TypeName(Range("A1").Value2)
 Double
 ```
@@ -39,7 +39,7 @@ and all other size ranges have two-dimensional array values.
 
 Since two-dimensional tuples do not exist in Python, it gets converted to a tuple-of-tuples. Often however, you will want to pass a range as a one-dimensional tuple. Consider for example the built-in Python function `sorted`. If you call this function on the range "A1:C1" it returns the same value as is passed in:
 
-```vb.net
+```
 ?Py.Str(Py.Call(Py.Builtins, "sorted", Py.Tuple(Range("A1:C1").Value2)))
 [(3.0, 1.0, 2.0)]
 ```
@@ -47,17 +47,20 @@ Since two-dimensional tuples do not exist in Python, it gets converted to a tupl
 This is because `sorted` only sorts the top-level sequence, which contains only one element, the tuple `(3.0, 1.0, 2.0)`.
 
 The VBA code is equivalent to the following Python code:
+
 ```python
 sorted(((3.0, 1.0, 2.0),))
 ```
+
 but we want the equivalent to:
+
 ```python
 sorted((3.0, 1.0, 2.0))
 ```
 
 To do this, you can convert the 1x3 two-dimensional VBA array to 3-element one-dimensional array before passing it to the python function Python:
 
-```vb.net
+```
 ?Py.Str(NDims(Range("A1:C1").Value2, 1))
 (3.0, 1.0, 2.0)
 ?Py.Str(Py.Call(Py.Builtins, "sorted", Py.Tuple(NDims(Range("A1:C1").Value2, 1))))
@@ -71,7 +74,7 @@ Conversion to/from NumPy types is a frequent necessity, and ExcelPython does not
 
 For example, the function `scipy.stats.norm.cdf` returns a `numpy.float64` object:
 
-```vb.net
+```
 Set vars = Py.Dict()
 Py.Exec "from scipy.stats import norm", vars
 ?Py.Str(Py.Eval("norm.cdf(0.0)", vars))
@@ -85,14 +88,14 @@ The last expression causes an error, because the `Py.Var` function (or, more gen
 
 So how do you get the value out of Python and into VBA? The key is to convert it to a type which `Py.Var` _does_ know how to convert, such as `float`. Note that this can be done either within your Python code:
 
-```vb.net
+```
 ?Py.Var(Py.Eval("float(norm.cdf(0.0))", vars))
  0.5 
 ```
 
 or in the VBA code by calling the Python conversion function directly on the returned object:
 
-```vb.net
+```
 ?Py.Var(Py.Call(Py.Builtins, "float", Py.Tuple(Py.Eval("norm.cdf(0.0)", locals))))
  0.5
 ```
@@ -103,7 +106,6 @@ The same applies to passing in/out Numpy arrays. Suppose you have a function tha
 
 ```python
 # MatrixFunctions.py
-
 import numpy as np
 
 def xl_mmult(x, y):
