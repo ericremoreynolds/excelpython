@@ -1,6 +1,8 @@
-# Configuring xlpython
+### Note: this documentation is out of date!
 
-On of the most important features of xlpython is the ability to specify exactly which Python installation you wish to distribute, and to define an isolated Python execution environment with which your workbook interacts.
+# Configuring ExcelPython
+
+On of the most important features of ExcelPython is the ability to specify exactly which Python installation you wish to distribute, and to define an isolated Python execution environment with which your workbook interacts.
 
 In tutorials, the default configuration is used, which runs the PC's default Python installation (i.e. the one that appears by running `python.exe` in the Start > Run box).
 
