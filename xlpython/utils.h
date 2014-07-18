@@ -1,6 +1,8 @@
 void ToVariant(const char* str, VARIANT* var);
 void ToVariant(const std::string& str, VARIANT* var);
 void ToStdString(const wchar_t* ws, std::string& str);
+void ToStdString(BSTR bs, std::string& str);
+void ToBstr(const std::string& str, BSTR& bs);
 
 class formatted_exception : public std::exception
 {
@@ -40,6 +42,8 @@ void ParseGUID(const char* str, GUID& guid);
 void NewGUID(GUID& guid);
 
 void GetLastWriteTime(const char* path, FILETIME* pFileTime);
+
+std::string GetLastErrorMessage();
 
 static inline std::string strlower(std::string& s)
 {

@@ -23,6 +23,23 @@ class XLPythonObject(object):
 	_public_methods_ = []
 	def __init__(self, obj):
 		self.obj = obj
+		
+class XLPythonIterator(object):
+	_public_methods_ = [ "MoveNext", "Current" ]
+	
+	def __init__(self, obj):
+		self.iter = obj.__iter__()
+		self.current = None
+	
+	def MoveNext(self):
+		try:
+			self.current = self.iter.next()
+			return True
+		except StopIteration:
+			return False
+	
+	def Current(self):
+		return ToVariant(self.current)
 
 def FromVariant(var):
 	try:
@@ -34,7 +51,7 @@ def ToVariant(obj):
 	return win32com.server.util.wrap(XLPythonObject(obj))
 
 class XLPython(object):
-	_public_methods_ = [ 'Module', 'Tuple', 'Dict', 'List', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'GetAttr', 'SetAttr', 'Eval', 'Exec', 'ShowConsole', 'Reload', 'AddPath' ]
+	_public_methods_ = [ 'Module', 'Tuple', 'Dict', 'List', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'GetAttr', 'SetAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Reload', 'AddPath', 'Builtins', 'Len', 'GetIter' ]
 	
 	def ShowConsole(self):
 		import ctypes
@@ -117,6 +134,14 @@ class XLPython(object):
 		else:
 			return ToVariant(getattr(obj, method)(*pargs, **kwargs))
 			
+	def Len(self, obj):
+		obj = FromVariant(obj)
+		return len(obj)
+		
+	def Builtins(self):
+		import __builtin__
+		return ToVariant(__builtin__)
+			
 	def GetItem(self, obj, key):
 		obj = FromVariant(obj)
 		key = FromVariant(key)
@@ -138,6 +163,15 @@ class XLPython(object):
 		attr = FromVariant(attr)
 		value = FromVariant(value)
 		setattr(obj, attr, value)
+		
+	def HasAttr(self, obj, attr):
+		obj = FromVariant(obj)
+		attr = FromVariant(attr)
+		return hasattr(obj, attr)
+		
+	def GetIter(self, obj):
+		obj = FromVariant(obj)
+		return win32com.server.util.wrap(XLPythonIterator(obj))
 		
 	def Eval(self, expr, *args):
 		globals = None

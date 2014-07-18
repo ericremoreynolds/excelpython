@@ -66,25 +66,25 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.0</TargetName>
+    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.1</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.0</TargetName>
+    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.1</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.0</TargetName>
+    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.1</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.0</TargetName>
+    <TargetName>$(ProjectName)$(PlatformArchitecture)-2.0.1</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,7 +100,7 @@
       <ModuleDefinitionFile>xlpython.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir).xlpy"</Command>
+      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)addin\xlpython"</Command>
       <Message>Copying dll to bin folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -118,7 +118,7 @@
       <ModuleDefinitionFile>xlpython.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir).xlpy"</Command>
+      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)addin\xlpython"</Command>
       <Message>Copying dll to bin folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -140,7 +140,7 @@
       <ModuleDefinitionFile>xlpython.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir).xlpy"</Command>
+      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)addin\xlpython"</Command>
       <Message>Copying dll to bin folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -162,7 +162,7 @@
       <ModuleDefinitionFile>xlpython.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir).xlpy"</Command>
+      <Command>xcopy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)addin\xlpython"</Command>
       <Message>Copying dll to bin folder</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>

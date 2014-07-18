@@ -65,5 +65,15 @@ HRESULT __stdcall CDispatchWrapper::Invoke(DISPID dispIdMember, REFIID riid, LCI
 	VariantInit(&result);
 	HRESULT hRet = pDispatch->Invoke(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult == NULL ? &result : pVarResult, pExcepInfo, puArgErr);
 	VariantClear(&result);
+
+	//if(FAILED(hr))
+	//{
+	//	BSTR bstrOld = pExcepInfo->bstrDescription;
+	//	std::string 
+
+
+	//	SysFreeString(bstrOld);
+	//}
+
 	return hRet;
 }

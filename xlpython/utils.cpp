@@ -28,6 +28,49 @@ void ToStdString(const wchar_t* ws, std::string& str)
 	delete narrow;
 }
 
+void ToStdString(BSTR bs, std::string& str)
+{
+	BOOL bUsedDefaultChar;
+	int len = (int) SysStringLen(bs);
+	AutoArrayDeleter<char> narrow(new char[len+1]);
+	WideCharToMultiByte(CP_ACP, 0, bs, len, narrow.p, len+1, "?", &bUsedDefaultChar);
+	narrow.p[len] = 0;
+	str = narrow.p;
+}
+
+void ToBStr(const std::string& str, BSTR& bs)
+{
+	int sz = (int) str.length() + 1;
+	OLECHAR* wide = new OLECHAR[sz];
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), sz * sizeof(OLECHAR), wide, sz);
+	bs = SysAllocString(wide);
+	delete[] wide;
+}
+
+std::string GetLastErrorMessage()
+{
+	DWORD dwError = GetLastError();
+	char* lpMsgBuf;
+	
+	if(0 == FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		dwError,
+		0,
+		(LPSTR) &lpMsgBuf,
+		0,
+		NULL))
+	{
+		return "Could not get error message: FormatMessage failed.";
+	}
+
+	std::string ret = lpMsgBuf;
+	LocalFree(lpMsgBuf);
+	return ret;
+}
+
 const char* GetDLLPath()
 {
 	static bool initialized = false;

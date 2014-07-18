@@ -324,9 +324,8 @@ void Config::ActivateRPCServer()
 		if(!CreateProcessA(NULL, cmdLine, NULL, NULL, TRUE, 0, envStr.p, workingDir.c_str(), &si, &pi))
 		{
 			formatted_exception e;
-			e << "Could not create Python process.\n\n";
-			if(this->HasValue("RedirectOutput"))
-				e << "Try consulting '" << this->GetValue("RedirectOutput") << "'.\n\n";
+			e << "Could not create Python process.\n";
+			e << "Error message: " << GetLastErrorMessage() << "\n";
 			e << "Command: " << cmdLine << "\nWorking Dir: " << workingDir;
 			throw e;
 		}
@@ -348,9 +347,10 @@ void Config::ActivateRPCServer()
 			if(dwExitCode != STILL_ACTIVE)
 			{
 				formatted_exception e;
-				e << "Python process exited before it was possible to create the interface object.\n\n";
+				e << "Python process exited before it was possible to create the interface object.";
 				if(this->HasValue("RedirectOutput"))
-					e << "Try consulting " << this->GetValue("RedirectOutput") << ".\n\n";
+					e << " Try consulting '" << this->GetValue("RedirectOutput") << "'.";
+				e << "\n";
 				e << "Command: " << cmdLine << "\nWorking Dir: " << workingDir;
 				throw e;
 			}
