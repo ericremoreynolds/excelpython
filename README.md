@@ -27,6 +27,8 @@ Sub test3()
 End Sub
 ```
 
+Note that the latest release zip also contains an Excel add-in `xlpython.xlam`. We're still in the process of developing that, not to mention writing the documentation - but feel welcome to take a look, and see what it does! Sneak preview: automatic generation of VBA wrappers for Python functions.
+ 
 ### About ExcelPython
 
 ExcelPython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library.
