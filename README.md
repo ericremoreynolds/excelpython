@@ -3,8 +3,8 @@
 ### Get started
 
 * Download the [latest release](/releases)
-* Unzip it into the folder containing your workbook (this will create the `.xlpy` folder)
-* Import the module `.xlpy\xlpython.bas` into your workbook
+* Unzip it into the folder containing your workbook (this will create the `xlpython` folder)
+* Import the module `xlpython\xlpython.bas` into your workbook
 
 and you're set! No registration or typelibs. All that is needed is Python with PyWin32 installed.
 
