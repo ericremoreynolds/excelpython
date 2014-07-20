@@ -2,7 +2,7 @@
 
 ### Get started
 
-* Download the [latest release](https://github.com/ericremoreynolds/excelpython/releases)
+* Download the [latest release](/releases)
 * Unzip it into the folder containing your workbook (this will create the `.xlpy` folder)
 * Import the module `.xlpy\xlpython.bas` into your workbook
 
