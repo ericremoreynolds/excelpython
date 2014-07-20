@@ -37,4 +37,4 @@ v2 is a major rewrite of the previous ExcelPython, moving over to a new approach
 
 Check out the [docs](docs/) folder for tutorials to help you get started and links to other resources.
 
-If you don't find your answer, need more help, find a bug, think of a useful new feature, or just want to give some feedback by letting me and everyone else know what you're doing with xlpython, please create an issue ticket!
+If you don't find your answer, need more help, find a bug, think of a useful new feature, or just want to give some feedback by letting me and everyone else know what you're doing with ExcelPython, please create an issue ticket!
