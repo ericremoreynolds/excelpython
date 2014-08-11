@@ -20,26 +20,47 @@ class XLPythonOption(object):
 		self.value = value
 
 class XLPythonObject(object):
-	_public_methods_ = []
+	_public_methods_ = [ 'Item', 'Count' ]
+	_public_attrs_ = [ '_NewEnum' ]
+	
 	def __init__(self, obj):
 		self.obj = obj
 		
-class XLPythonIterator(object):
-	_public_methods_ = [ "MoveNext", "Current" ]
+	def _NewEnum(self):
+		return win32com.server.util.wrap(XLPythonEnumerator(self.obj), iid=pythoncom.IID_IEnumVARIANT)
 	
-	def __init__(self, obj):
-		self.iter = obj.__iter__()
-		self.current = None
+	def Item(self, key):
+		return ToVariant(self.obj[key])
 	
-	def MoveNext(self):
+	def Count(self):
+		return len(self.obj)
+		
+class XLPythonEnumerator:
+	_public_methods_ = [ "Next", "Skip", "Reset", "Clone" ]
+	
+	def __init__(self, gen):
+		self.iter = gen.__iter__()
+
+	def _query_interface_(self, iid):
+		if iid == pythoncom.IID_IEnumVARIANT:
+			return 1
+
+	def Next(self, count):
+		r = []
 		try:
-			self.current = self.iter.next()
-			return True
+			r.append(FromVariant(self.iter.next()))
 		except StopIteration:
-			return False
-	
-	def Current(self):
-		return ToVariant(self.current)
+			pass
+		return r
+
+	def Skip(self, count):
+		raise win32com.server.exception.COMException(scode = 0x80004001)  # E_NOTIMPL
+
+	def Reset(self):
+		raise win32com.server.exception.COMException(scode = 0x80004001)  # E_NOTIMPL
+
+	def Clone(self):
+		raise win32com.server.exception.COMException(scode = 0x80004001)  # E_NOTIMPL
 
 def FromVariant(var):
 	try:
@@ -51,7 +72,7 @@ def ToVariant(obj):
 	return win32com.server.util.wrap(XLPythonObject(obj))
 
 class XLPython(object):
-	_public_methods_ = [ 'Module', 'Tuple', 'Dict', 'List', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'GetAttr', 'SetAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Reload', 'AddPath', 'Builtins', 'Len', 'GetIter' ]
+	_public_methods_ = [ 'Module', 'Tuple', 'TupleFromArray', 'Dict', 'DictFromArray', 'List', 'ListFromArray', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'DelItem', 'Contains', 'GetAttr', 'SetAttr', 'DelAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Reload', 'AddPath', 'Builtin', 'Len']
 	
 	def ShowConsole(self):
 		import ctypes
@@ -90,9 +111,15 @@ class XLPython(object):
 			path = path.split(";")
 		return ToVariant(XLPythonOption('addpath', path))
 		
+	def TupleFromArray(self, elements):
+		return self.Tuple(*elements)
+		
 	def Tuple(self, *elements):
 		return ToVariant(tuple((FromVariant(e) for e in elements)))
 		
+	def DictFromArray(self, kvpairs):
+		return self.Dict(*kvpairs)
+	
 	def Dict(self, *kvpairs):
 		if len(kvpairs) % 2 != 0:
 			raise Exception("Arguments must be alternating keys and values.")
@@ -103,6 +130,9 @@ class XLPython(object):
 			value = FromVariant(kvpairs[2*k+1])
 			d[key] = value
 		return ToVariant(d)
+		
+	def ListFromArray(self, elements):
+		return self.List(*elements)
 		
 	def List(self, *elements):
 		return ToVariant(list((FromVariant(e) for e in elements)))
@@ -138,7 +168,7 @@ class XLPython(object):
 		obj = FromVariant(obj)
 		return len(obj)
 		
-	def Builtins(self):
+	def Builtin(self):
 		import __builtin__
 		return ToVariant(__builtin__)
 			
@@ -152,6 +182,12 @@ class XLPython(object):
 		key = FromVariant(key)
 		value = FromVariant(value)
 		obj[key] = value
+		
+	def DelItem(self, obj, key):
+		del obj[key]
+		
+	def Contains(self, obj, key):
+		return key in obj
 		
 	def GetAttr(self, obj, attr):
 		obj = FromVariant(obj)
@@ -169,9 +205,8 @@ class XLPython(object):
 		attr = FromVariant(attr)
 		return hasattr(obj, attr)
 		
-	def GetIter(self, obj):
-		obj = FromVariant(obj)
-		return win32com.server.util.wrap(XLPythonIterator(obj))
+	def DelAttr(self, obj, attr):
+		delattr(obj, attr)
 		
 	def Eval(self, expr, *args):
 		globals = None

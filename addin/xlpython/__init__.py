@@ -7,7 +7,7 @@ def xlfunc(f = None, **kwargs):
 		xlfunc["name"] = f.__name__
 		xlfunc["doc"] = f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in module '" + f.__module__ + "'."
 		xlargs = xlfunc["args"] = []
-		for vname in f.__code__.co_varnames:
+		for vname in f.__code__.co_varnames[:f.__code__.co_argcount]:
 			xlargs.append({
 				"name": vname,
 				"marshal": "value"
