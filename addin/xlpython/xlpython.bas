@@ -34,4 +34,3 @@ Function Py()
     XLPyLoadDLL
     If 0 <> XLPyDLLActivate(Py, XLPyConfig) Then Err.Raise 1000, Description:=Py
 End Function
-

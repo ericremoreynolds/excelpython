@@ -58,6 +58,7 @@ void AddEnvironmentVariables(Config::ValueMap& values)
 
 Config::Config(const std::string& filename)
 	: pInterface(NULL)
+	, hJob(NULL)
 {
 	GetLastWriteTime(filename.c_str(), &ftLastModify);
 
@@ -117,6 +118,10 @@ Config::~Config()
 	// release dispatch object if present
 	if(pInterface != NULL)
 		pInterface->Release();
+
+	// release the job handle if present
+	if(hJob != NULL)
+		CloseHandle(hJob);
 }
 
 Config* Config::GetConfig(const std::string& filename)
@@ -146,6 +151,36 @@ Config* Config::GetConfig(const std::string& filename)
 
 		return it->second;
 	}
+}
+
+int Config::GetValueAsInt(const std::string& key)
+{
+	Config::ValueMap::iterator it = values.find(key);
+	
+	if(it == values.end())
+		throw formatted_exception() << "Key '" << key << "' not found in configuration (nor is it pre-defined).";
+
+	char* end;
+	long int value = strtol(it->second.c_str(), &end, 0);
+	if(*end == 0)
+		return value;
+
+	throw formatted_exception() << "Could not convert '" << key << " = " << it->second << "' to integer.";
+}
+
+int Config::GetValueAsInt(const std::string& key, int dfault)
+{
+	Config::ValueMap::iterator it = values.find(key);
+	
+	if(it == values.end())
+		return dfault;
+
+	char* end;
+	long int value = strtol(it->second.c_str(), &end, 0);
+	if(*end == 0)
+		return value;
+
+	throw formatted_exception() << "Could not convert '" << key << " = " << it->second << "' to integer.";
 }
 
 std::string Config::GetValue(const std::string& key)
@@ -211,6 +246,14 @@ void Config::ActivateRPCServer()
 		pInterface->Release();
 		pInterface = NULL;
 	}
+
+	// release existing job if present
+	if(hJob != NULL)
+	{
+		CloseHandle(hJob);
+		hJob = NULL;
+	}
+	AutoCloseHandle hJobAuto(NULL);
 
 	// get guid
 	GUID clsid;
@@ -320,6 +363,20 @@ void Config::ActivateRPCServer()
 			si.hStdOutput = hStdOut;
 		}
 
+		// create the job
+		if(this->GetValueAsInt("KillWithHostProcess", 1))
+		{
+			hJobAuto.handle = CreateJobObject(NULL, NULL);
+			if(NULL == hJobAuto.handle)
+				throw formatted_exception() << "CreateJobObject failed.";
+			
+			JOBOBJECT_EXTENDED_LIMIT_INFORMATION jxli;
+			ZeroMemory(&jxli, sizeof(jxli));
+			jxli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+			if(!SetInformationJobObject(hJobAuto.handle, JobObjectExtendedLimitInformation, &jxli, sizeof(jxli)))
+				throw formatted_exception() << "SetInformationJobObject failed: " << GetLastErrorMessage();
+		}
+
 		// create the Python process
 		if(!CreateProcessA(NULL, cmdLine, NULL, NULL, TRUE, 0, envStr.p, workingDir.c_str(), &si, &pi))
 		{
@@ -331,6 +388,13 @@ void Config::ActivateRPCServer()
 		}
 		AutoCloseHandle hPiThread(pi.hThread);
 		AutoCloseHandle hPiProcess(pi.hProcess);
+
+		// add the process to the job
+		if(hJobAuto.handle != NULL)
+		{
+			if(!AssignProcessToJobObject(hJobAuto.handle, pi.hProcess))
+				throw formatted_exception() << "AssignProcessToJobObject failed.";
+		}
 
 		// now repeatedly try to create the Python interface object, waiting up to 1 minute to do it
 		for(int k=0; k<600; k++)
@@ -361,8 +425,12 @@ void Config::ActivateRPCServer()
 
 	// if still haven't managed to get the object throw an error
 	if(FAILED(hr))
-		throw formatted_exception() << "Could not active Python COM server, hr = " << hr;
+		throw formatted_exception() << "Could not activate Python COM server, hr = " << hr;
 
 	// wrap the object
 	pInterface = new CDispatchWrapper(pInterface);
+
+	// give up job handle to config class
+	this->hJob = hJobAuto.handle;
+	hJobAuto.handle = NULL;
 }

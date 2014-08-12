@@ -18,6 +18,10 @@ public:
 	std::string GetValue(const std::string& key);
 	std::string GetValue(const std::string& key, const std::string& dfault);
 	bool TryGetValue(const std::string& key, std::string& value);
+
+	int GetValueAsInt(const std::string& key);
+	int GetValueAsInt(const std::string& key, int dfault);
+
 	bool HasValue(const std::string& key);
 	ValueMap::iterator GetIterator();
 
@@ -26,4 +30,5 @@ public:
 
 	IDispatch* pInterface;
 	ValueMap values;
+	HANDLE hJob;
 };

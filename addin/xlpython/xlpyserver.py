@@ -48,7 +48,7 @@ class XLPythonEnumerator:
 	def Next(self, count):
 		r = []
 		try:
-			r.append(FromVariant(self.iter.next()))
+			r.append(ToVariant(self.iter.next()))
 		except StopIteration:
 			pass
 		return r
@@ -73,6 +73,12 @@ def ToVariant(obj):
 
 class XLPython(object):
 	_public_methods_ = [ 'Module', 'Tuple', 'TupleFromArray', 'Dict', 'DictFromArray', 'List', 'ListFromArray', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'DelItem', 'Contains', 'GetAttr', 'SetAttr', 'DelAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Reload', 'AddPath', 'Builtin', 'Len']
+	
+	def __init__(self):
+		print "XLPython object created"
+	
+	def __del__(self):
+		print "XLPython object destroyed"
 	
 	def ShowConsole(self):
 		import ctypes
@@ -226,7 +232,7 @@ class XLPython(object):
 		
 	def Exec(self, stmt, *args):
 		globals = None
-		locals = None	
+		locals = None
 		for arg in args:
 			arg = FromVariant(arg)
 			if type(arg) is dict:
