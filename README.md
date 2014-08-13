@@ -14,7 +14,7 @@ def matrixmult(x, y):
 
 ### About ExcelPython
 
-ExcelPython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library, while allowing you to avoid the complexities of Python COM programming.
+ExcelPython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library while sparing you the complexities of Python COM programming.
 
 ### Getting started
 
