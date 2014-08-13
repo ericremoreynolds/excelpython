@@ -1,5 +1,20 @@
 # ExcelPython v2
 
+### Write Excel UDFs in Python!
+
+```python
+from xlpython import *
+
+@xlfunc
+@xlarg("x", "nparray", 2)
+@xlarg("y", "nparray", 2)
+def matrixmult(x, y):
+    return x.dot(y)
+```
+
+![image](https://cloud.githubusercontent.com/assets/5197585/3907706/6c3a2cea-22fd-11e4-812f-41c814d1cc54.png)
+
+
 ### Get started
 
 * Download the [latest release](https://github.com/ericremoreynolds/excelpython/releases)
