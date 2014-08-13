@@ -1,6 +1,7 @@
 **Getting started with ExcelPython**
 
 1. [Installing the ExcelPython add-in](tutorials/GettingStarted01.md)
+2. [Using ExcelPython without the add-in](tutorials/GettingStarted02.md)
 
 **Learn how to manipulate Python objects in VBA**
 
