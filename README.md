@@ -20,7 +20,8 @@ ExcelPython is a lightweight, easily distributable library for interfacing Excel
 
 * Download the [latest release](https://github.com/ericremoreynolds/excelpython/releases)
 * Check out the [docs](docs/) for tutorial to help you get going
-* The only prerequisites are Excel and Python with PyWin32 installed
+
+The only prerequisites are Excel and Python with PyWin32 installed.
 
 ### Help me!
 
