@@ -24,6 +24,6 @@ ExcelPython is a lightweight, easily distributable library for interfacing Excel
 
 ### Help me!
 
-Check out the [docs](docs/) folder for tutorials to help you get started and links to other resources. Failing that, try the [issues](https://github.com/ericremoreynolds/excelpython/issues) section or the [discussion forum on SourceForge](https://sourceforge.net/p/excelpython/discussion/general/).
+Check out the [docs](docs/) folder for tutorials to help you get started and links to other resources. Failing that, try the [issues](https://github.com/ericremoreynolds/excelpython/issues?q=) section or the [discussion forum on SourceForge](https://sourceforge.net/p/excelpython/discussion/general/).
 
 If you still don't find your answer, need more help, find a bug, think of a useful new feature, or just want to give some feedback by letting me and everyone else know what you're doing with ExcelPython, please go ahead and create an [issue ticket](https://github.com/ericremoreynolds/excelpython/issues/new)!
