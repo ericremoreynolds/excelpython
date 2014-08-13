@@ -1,5 +1,3 @@
-# ExcelPython v2
-
 ```python
 from xlpython import *
 
@@ -13,7 +11,7 @@ def matrixmult(x, y):
 ![image](https://cloud.githubusercontent.com/assets/5197585/3907706/6c3a2cea-22fd-11e4-812f-41c814d1cc54.png)
 
 
-### Get started
+### Getting started with ExcelPython
 
 * Download the [latest release](https://github.com/ericremoreynolds/excelpython/releases)
 * Check out the [docs](docs/) for tutorial to help you get going
