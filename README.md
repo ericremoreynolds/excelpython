@@ -1,4 +1,4 @@
-# ExcelPython
+# ExcelPython v2
 
 ```python
 from xlpython import *
