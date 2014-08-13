@@ -2,7 +2,7 @@ void ToVariant(const char* str, VARIANT* var);
 void ToVariant(const std::string& str, VARIANT* var);
 void ToStdString(const wchar_t* ws, std::string& str);
 void ToStdString(BSTR bs, std::string& str);
-void ToBstr(const std::string& str, BSTR& bs);
+void ToBStr(const std::string& str, BSTR& bs);
 
 class formatted_exception : public std::exception
 {
@@ -64,15 +64,16 @@ static inline std::string strtrim(std::string &s)
 	return s;
 }
 
-static inline void strsplit(std::string& s, const std::string& sep, std::vector<std::string>& out)
+static inline void strsplit(const std::string& s, const std::string& sep, std::vector<std::string>& out, bool trim=true)
 {
+	std::string ss = s;
 	size_t pos;
-	while(std::string::npos != (pos = s.find(sep)))
+	while(std::string::npos != (pos = ss.find(sep)))
 	{
-		out.push_back(strtrim(s.substr(0, pos)));
-		s = s.substr(pos + sep.length());
+		out.push_back(trim ? strtrim(ss.substr(0, pos)) : ss.substr(0, pos));
+		ss = ss.substr(pos + sep.length());
 	}
-	out.push_back(strtrim(s));
+	out.push_back(trim ? strtrim(ss) : ss);
 }
 
 template<class T>

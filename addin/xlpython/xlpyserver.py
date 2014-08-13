@@ -72,13 +72,7 @@ def ToVariant(obj):
 	return win32com.server.util.wrap(XLPythonObject(obj))
 
 class XLPython(object):
-	_public_methods_ = [ 'Module', 'Tuple', 'TupleFromArray', 'Dict', 'DictFromArray', 'List', 'ListFromArray', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'DelItem', 'Contains', 'GetAttr', 'SetAttr', 'DelAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Reload', 'AddPath', 'Builtin', 'Len']
-	
-	def __init__(self):
-		print "XLPython object created"
-	
-	def __del__(self):
-		print "XLPython object destroyed"
+	_public_methods_ = [ 'Module', 'Tuple', 'TupleFromArray', 'Dict', 'DictFromArray', 'List', 'ListFromArray', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'DelItem', 'Contains', 'GetAttr', 'SetAttr', 'DelAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Builtin', 'Len']
 	
 	def ShowConsole(self):
 		import ctypes
@@ -87,35 +81,21 @@ class XLPython(object):
 		sys.stdout = open("CONOUT$", "a", 0)
 		sys.stderr = open("CONOUT$", "a", 0)
 	
-	def Module(self, module, *opts):
-		options = { 'addpath': None, 'reload': True }
-		for opt in opts:
-			opt = FromVariant(opt)
-			if type(opt) == XLPythonOption:
-				print opt.option, opt.value
-				options[opt.option] = opt.value
-		syspath = list(sys.path) # save the path
-		try:
-			locals = {}
-			if options['addpath'] is not None:
-				for i, p in enumerate(options['addpath']):
-					sys.path.insert(i, str(p))
-			exec "import " + module in locals
-			m = locals[module]
-			if reload:
-				m = __builtins__.reload(m)
-		finally:
-			# restore the system path
-			sys.path = syspath
+	def Module(self, module, reload=False):
+		vars = {}
+		exec "import " + module in vars
+		m = vars[module]
+		if reload:
+			m = __builtins__.reload(m)
 		return ToVariant(m)
 		
-	def Reload(self, reload=True):
-		return ToVariant(XLPythonOption('reload', reload))
+	# def Reload(self, reload=True):
+		# return ToVariant(XLPythonOption('reload', reload))
 
-	def AddPath(self, path):
-		if isinstance(path, unicode):
-			path = path.split(";")
-		return ToVariant(XLPythonOption('addpath', path))
+	# def AddPath(self, path):
+		# if isinstance(path, unicode):
+			# path = path.split(";")
+		# return ToVariant(XLPythonOption('addpath', path))
 		
 	def TupleFromArray(self, elements):
 		return self.Tuple(*elements)
@@ -149,8 +129,18 @@ class XLPython(object):
 	def Str(self, obj):
 		return str(FromVariant(obj))
 		
-	def Var(self, obj):
-		return FromVariant(obj)
+	def Var(self, obj, lax=False):
+		value = FromVariant(obj)
+		if lax:
+			t = type(value)
+			if t is dict:
+				value = tuple(value.iteritems())
+			elif t.__name__ == 'ndarray' and t.__module__ == 'numpy':
+				value = value.tolist()
+		if type(value) is tuple:
+			return (value,)
+		else:
+			return value
 		
 	def Call(self, obj, *args):
 		obj = FromVariant(obj)
@@ -254,7 +244,6 @@ class MyPolicy(BaseDefaultPolicy):
 	def _CreateInstance_(self, reqClsid, reqIID):
 		if reqClsid == clsid:
 			return serverutil.wrap(XLPython(), reqIID)
-			print reqClsid
 		else:
 			return BaseDefaultPolicy._CreateInstance_(self, clsid, reqIID)
 

@@ -66,14 +66,34 @@ HRESULT __stdcall CDispatchWrapper::Invoke(DISPID dispIdMember, REFIID riid, LCI
 	HRESULT hRet = pDispatch->Invoke(dispIdMember, riid, lcid, wFlags, pDispParams, pVarResult == NULL ? &result : pVarResult, pExcepInfo, puArgErr);
 	VariantClear(&result);
 
-	//if(FAILED(hr))
-	//{
-	//	BSTR bstrOld = pExcepInfo->bstrDescription;
-	//	std::string 
+	if(FAILED(hRet) && pExcepInfo->bstrDescription != NULL)
+	{
+		BSTR bstrOld = pExcepInfo->bstrDescription;
+		std::string old;
+		ToStdString(bstrOld, old);
 
+		if(old.substr(0, 24) == "Unexpected Python Error:")
+		{
+			std::vector<std::string> parts;
+			strsplit(old, "\n", parts, false);
+			if(parts[0] == "Unexpected Python Error: Traceback (most recent call last):")
+			{
+				std::string neu;
+				for(int k = (int) parts.size() - 1; k > 0; k--)
+				{
+					if(!parts[k].empty())
+					{
+						if(!neu.empty())
+							neu += "\n";
+						neu += parts[k];
+					}
+				}
 
-	//	SysFreeString(bstrOld);
-	//}
+				ToBStr(neu, pExcepInfo->bstrDescription);
+				SysFreeString(bstrOld);
+			}
+		}
+	}
 
 	return hRet;
 }

@@ -1,9 +1,14 @@
+__all__ = [
+	"xlfunc",
+	"xlret",
+	"xlarg"
+	]
+
 def xlfunc(f):
 	if not hasattr(f, "__xlfunc__"):
 		xlf = f.__xlfunc__ = {}
 		xlf = f.__xlfunc__ = {}
 		xlf["name"] = f.__name__
-		xlf["doc"] = f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in module '" + f.__module__ + "'."
 		xlargs = xlf["args"] = []
 		xlargmap = xlf["argmap"] = {}
 		for vpos, vname in enumerate(f.__code__.co_varnames[:f.__code__.co_argcount]):
@@ -13,28 +18,61 @@ def xlfunc(f):
 				"marshal": "var",
 				"range": False,
 				"dtype": None,
-				"dims": -1
+				"dims": -1,
+				"doc": "Positional argument " + str(vpos+1)
 			})
 			xlargmap[vname] = xlargs[-1]
 		xlf["ret"] = {
-			"marshal": "auto"
+			"marshal": "auto",
+			"lax": True,
+			"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.func_code.co_filename) + "'."
 		}
 	return f
-		
-def xlret(marshal):
+
+xlretparams = set(("marshal", "lax", "doc"))
+def xlret(marshal=None, **kwargs):
+	if marshal is not None:
+		kwargs["marshal"] = marshal
 	def inner(f):
 		xlf = xlfunc(f).__xlfunc__
-		xlf["ret"]["marshal"] = marshal
+		xlr = xlf["ret"]
+		for k, v in kwargs.iteritems():
+			if k in xlretparams:
+				xlr[k] = v
+			else:
+				raise Exception("Invalid parameter '" + k + "'.")
 		return f
 	return inner
 	
-def xlarg(arg, marshal="var", dims=-1, dtype=None, range=False):
+xlargparams = set(("marshal", "dims", "dtype", "range", "doc"))
+def xlarg(arg, marshal=None, dims=None, **kwargs):
+	if marshal is not None:
+		kwargs["marshal"] = marshal
+	if dims is not None:
+		kwargs["dims"] = dims
 	def inner(f):
 		xlf = xlfunc(f).__xlfunc__
-		xlarg = xlf["argmap"][arg]
-		xlarg["marshal"] = marshal
-		xlarg["dtype"] = dtype
-		xlarg["dims"] = dims
-		xlarg["range"] = range
+		if arg not in xlf["argmap"]:
+			raise Exception("Invalid argument name '" + arg + "'.")
+		xla = xlf["argmap"][arg]
+		for k, v in kwargs.iteritems():
+			if k in xlargparams:
+				xla[k] = v
+			else:
+				raise Exception("Invalid parameter '" + k + "'.")
 		return f
 	return inner
+
+udf_scripts = {}
+def udf_script(filename):
+	import os.path
+	filename = filename.lower()
+	mtime = os.path.getmtime(filename)
+	if filename in udf_scripts:
+		mtime2, vars = udf_scripts[filename]
+		if mtime == mtime2:
+			return vars
+	vars = {}
+	execfile(filename, vars)
+	udf_scripts[filename] = (mtime, vars)
+	return vars
