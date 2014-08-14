@@ -12,8 +12,26 @@ Note that it is possible to [permanently install the add-in](#permanently-instal
 ## Setting up a workbook to interact with Python
 
 To interact with Python a workbook must first be enabled to use ExcelPython. To do this it is first necessary to save it as a macro-enabled workbook.
-1. Choose an empty folder and in it save an empty workbook as `Book1.xlsm`
-2. From the ExcelPython tab in the toolbar click 'Setup ExcelPython'
+
+* Choose an empty folder and in it save an empty workbook as `Book1.xlsm`
+* From the ExcelPython tab in the toolbar click 'Setup ExcelPython'
+
+Next write your user-defined function in Python. In the previous step ExcelPython will have created a file called `Book1.py` in the same folder as `Book1.xlsm` in which the Python functions to be used in the workbook can be defined. 
+
+* Open up `Book1.py` in your favourite text editor
+* Enter the following Python code:
+```python
+# Book1.py
+from xlpython import *
+
+@xlfunc
+def DoubleSum(x, y):
+	'''Returns twice the sum of the two arguments'''
+	return 2 * (x + y)
+```
+* Switch back to Excel and click 'Import Python UDFs' in the ExcelPython tab
+* Enter the formula `=DoubleSum(1, 2)` into a cell
+![image](https://cloud.githubusercontent.com/assets/5197585/3917596/e5365b3c-238e-11e4-8bce-0d97caceca2e.png)
 
 ## Permanently installing the ExcelPython add-in
 
