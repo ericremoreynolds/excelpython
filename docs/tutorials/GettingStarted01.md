@@ -40,7 +40,7 @@ Next write your user-defined function in Python. In the previous step ExcelPytho
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3917596/e5365b3c-238e-11e4-8bce-0d97caceca2e.png)
     
-* Note that the `DoubleSum` function is usable from VBA as well. In the VBA window (Alt+F11) switch to the Immediate Window (Ctrl+G) and type
+* Note that the `DoubleSum` function is usable from VBA as well. Open the VBA window (`Alt+F11`), switch to the Immediate Window (`Ctrl+G`) and type
 
     ?DoubleSum(1, 2)
 
@@ -65,7 +65,7 @@ We will now define a simple function for doing matrix multiplication using NumPy
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3918420/9ab74be2-2399-11e4-9b55-8a8005afeabc.png)
 
-    To enter the above array formula in Excel, fill in the values in the ranges `D1:E2` and `G1:H2` then select cells `A1:B2`, type in the formula `=MatrixMult(D1:E2, G1:H2)` and press Ctrl+Shift+Enter.
+    To enter the above array formula in Excel, fill in the values in the ranges `D1:E2` and `G1:H2` then select cells `A1:B2`, type in the formula `=MatrixMult(D1:E2, G1:H2)` and press `Ctrl+Shift+Enter`.
 
 ## Permanently installing the ExcelPython add-in
 
@@ -87,7 +87,7 @@ Unfortunately the folder's location varies depending on the version of Excel. So
     
 Note also that `%PROGRAMFILES%` may need to be substituted with `%PROGRAMFILES(x86)%` for 32-bit Excel installed on a 64-bit machine.
 
-If you are in doubt as to where the folder is located, you can also determine it by opening Excel, opening the VBA window (Alt+F11), switching to the Immediate Window (Ctrl+G) and typing
+If you are in doubt as to where the folder is located, you can also determine it by opening Excel, opening the VBA window (`Alt+F11`), switching to the Immediate Window (`Ctrl+G`) and typing
 
     ?Application.StartupPath
 
