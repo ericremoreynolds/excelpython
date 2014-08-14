@@ -1,8 +1,9 @@
-**Getting started with ExcelPython**
+**Getting started with the ExcelPython add-in**
 
-1. [Installing the ExcelPython add-in](tutorials/GettingStarted01.md)
-2. [Using ExcelPython without the add-in](tutorials/GettingStarted02.md)
-3. [Distributing workbooks developed with ExcelPython](tutorials/GettingStarted03.md)
+1. [Installing the add-in and writing your first user-defined function](tutorials/Addin01.md)
+1. [Dealing with array arguments](tutorials/Addin02.md)
+1. [Something a bit more interesting - NumPy arrays](tutorials/Addin03.md)
+1. [Permanently installing the add-in](tutorials/Addin04.md)
 
 **Learn how to manipulate Python objects in VBA**
 
