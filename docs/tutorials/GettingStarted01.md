@@ -70,7 +70,7 @@ At this point it is worth talking about one of Excel's oddities, namely that the
 
 ![image](https://cloud.githubusercontent.com/assets/5197585/3918954/f2a67fce-23a0-11e4-810d-52870204e77f.png)
 
-![image](https://cloud.githubusercontent.com/assets/5197585/3918958/02575a2e-23a1-11e4-8a5f-3f9e21a64abe.png)
+![image](https://cloud.githubusercontent.com/assets/5197585/3918991/7e2187ec-23a1-11e4-8fd8-6405c3bbc7b7.png)
 
 ExcelPython provides a mechanism for normalizing the input arguments so that your function can safely make assumptions about their dimensionality.
 
