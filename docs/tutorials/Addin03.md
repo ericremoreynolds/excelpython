@@ -25,3 +25,5 @@ We will now define a simple function for doing matrix multiplication using NumPy
     * select cells `A1:B2`
     * type in the formula `=MatrixMult(D1:E2, G1:H2)`
     * press `Ctrl+Shift+Enter`.
+
+To continue move onto the [next tutorial](./Addin04.md).
