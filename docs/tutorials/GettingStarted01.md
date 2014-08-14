@@ -32,6 +32,8 @@ Unfortunately the folder's location varies depending on the version of Excel. So
     Excel 2010 all users: %PROGRAMFILES%\Microsoft Office\Office14\XLSTART
     Excel 2007 all users: %PROGRAMFILES%\Microsoft Office\Office12\XLSTART
     Excel 2003 all users: %PROGRAMFILES%\Microsoft Office\Office11\XLSTART
+    
+Note also that `%PROGRAMFILES%` may need to be substituted with `%PROGRAMFILES(x86)%` for 32-bit Excel installed on a 64-bit machine.
 
 If you are in doubt as to where the folder is located, you can also determine it by opening Excel, opening the VBA window (Alt+F11), switching to the Immediate Window (Ctrl+G) and typing
 
