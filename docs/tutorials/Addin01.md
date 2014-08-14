@@ -44,4 +44,4 @@ Next write your user-defined function in Python. In the previous step ExcelPytho
     ?DoubleSum(1, 2)
     ```
 
-To continue move onto the [next tutorial](./Addin01.md).
+To continue move onto the [next tutorial](./Addin02.md).
