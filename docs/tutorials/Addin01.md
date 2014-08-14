@@ -7,6 +7,8 @@
 * If all goes well you should see the ExcelPython tab in Excel's toolbar.
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3917034/3623f40a-2385-11e4-9754-5e3b924e38a9.png)
+    
+* You may get an error saying `Programmatic access to Visual Basic Project is not trusted`. If so check out the [add-in troubleshooting guide](./AddinTrouble.md).
 
 Note that it is possible to [permanently install the add-in](./Addin04.md) so you don't need to open it manually each time.
 
