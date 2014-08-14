@@ -65,7 +65,7 @@ We will now define a simple function for doing matrix multiplication using NumPy
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3918420/9ab74be2-2399-11e4-9b55-8a8005afeabc.png)
 
-    Note: to enter the above array formula in Excel, fill in the values in the ranges `D1:E2` and `G1:H2` then select cells `A1:B2`, type in the formula `=MatrixMult(D1:E2, G1:H2)` and press `Ctrl+Shift+Enter`.
+    To enter the above array formula in Excel, fill in the values in the ranges `D1:E2` and `G1:H2` then select cells `A1:B2`, type in the formula `=MatrixMult(D1:E2, G1:H2)` and press Ctrl+Shift+Enter.
 
 ## Permanently installing the ExcelPython add-in
 
