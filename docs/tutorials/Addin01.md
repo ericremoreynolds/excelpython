@@ -8,7 +8,7 @@
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3917034/3623f40a-2385-11e4-9754-5e3b924e38a9.png)
 
-Note that it is possible to [permanently install the add-in](#permanently-installing-the-excelpython-add-in) so you don't need to open it manually each time.
+Note that it is possible to [permanently install the add-in](./Addin04.md) so you don't need to open it manually each time.
 
 ## Writing a user-defined function in Python
 
