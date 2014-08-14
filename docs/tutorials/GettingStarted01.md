@@ -102,7 +102,7 @@ At other times it you may want to assume that an argument that is one-dimensiona
     
 * Click 'Import Python UDFs' to pick up the changes.
 
-* ![image](https://cloud.githubusercontent.com/assets/5197585/3919614/54cedaa2-23ab-11e4-8ba9-56dcd86815ad.png)
+    ![image](https://cloud.githubusercontent.com/assets/5197585/3919614/54cedaa2-23ab-11e4-8ba9-56dcd86815ad.png)
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3919622/6b5ed790-23ab-11e4-9dce-52b45bb72717.png)
 
