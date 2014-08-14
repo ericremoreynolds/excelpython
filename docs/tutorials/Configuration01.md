@@ -12,4 +12,4 @@ Inside this last folder there is a file called `xlpython.cfg` which determines h
 
 To specify that the Python distribution in `%SOMEFOLDER%\MatrixAlgebra\PortablePython` must be used, make the following modification to `xlpython.cfg`
 
-    Command = $(ConfigDir)\PortablePython\pythonw.exe -u "$(ConfigDir)\xlpyserver.py" $(CLSID)
+    Command = $(ConfigDir)\..\PortablePython\pythonw.exe -u "$(ConfigDir)\xlpyserver.py" $(CLSID)
