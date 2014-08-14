@@ -42,7 +42,9 @@ Next write your user-defined function in Python. In the previous step ExcelPytho
     
 * Note that the `DoubleSum` function is usable from VBA as well. Open the VBA window (`Alt+F11`), switch to the Immediate Window (`Ctrl+G`) and type
 
+    ```
     ?DoubleSum(1, 2)
+    ```
 
 ## Something a bit more interesting
 
