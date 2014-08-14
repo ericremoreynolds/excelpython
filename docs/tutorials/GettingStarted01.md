@@ -22,14 +22,14 @@ Next write your user-defined function in Python. In the previous step ExcelPytho
 3. Open up `Book1.py` in your favourite text editor
 4. Enter the following Python code:
     ```python
-# Book1.py
-from xlpython import *
-
-@xlfunc
-def DoubleSum(x, y):
-	'''Returns twice the sum of the two arguments'''
-	return 2 * (x + y)
-```
+    # Book1.py
+    from xlpython import *
+    
+    @xlfunc
+    def DoubleSum(x, y):
+    	'''Returns twice the sum of the two arguments'''
+    	return 2 * (x + y)
+    ```
 * Switch back to Excel and click 'Import Python UDFs' in the ExcelPython tab
 * Enter the formula `=DoubleSum(1, 2)` into a cell
 
