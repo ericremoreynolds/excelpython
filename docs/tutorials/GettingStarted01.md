@@ -1,5 +1,3 @@
-**nb: work in progress**
-
 ## Loading the ExcelPython add-in
 
 * Download the latest [release](https://github.com/ericremoreynolds/excelpython/releases) and unzip it somewhere.
@@ -45,6 +43,38 @@ Next write your user-defined function in Python. In the previous step ExcelPytho
     ```
     ?DoubleSum(1, 2)
     ```
+    
+## Array arguments
+
+You can pass a range as a function argument, as opposed to a single cell. Its value will be converted to a tuple of tuples.
+
+* Add the following code to `Book1.py` from the previous section
+
+    ```python
+    @xlfunc
+    def MyUDF(x):
+        return repr(x)
+    ```
+    
+    This function simply returns its argument converted to string representation. This will allow us to explore how the formula arguments are converted into Python objects.
+    
+* Click 'Import Python UDFs' to pick up the changes
+
+* Modify the workbook as below
+
+    ![image](https://cloud.githubusercontent.com/assets/5197585/3918899/302a5790-23a0-11e4-80fe-7c75b63c4225.png)
+
+As you can see the value of the 2x2 range `F1:G2` has been convert to a tuple containing tuples representing the range's two rows.
+
+At this point it is worth talking about one of Excel's oddities, namely that the value of a 1x1 range is always a scalar, whereas the value of any range larger than 1x1 is represented by a two-dimensional array.
+
+![image](https://cloud.githubusercontent.com/assets/5197585/3918954/f2a67fce-23a0-11e4-810d-52870204e77f.png)
+
+![image](https://cloud.githubusercontent.com/assets/5197585/3918958/02575a2e-23a1-11e4-8a5f-3f9e21a64abe.png)
+
+ExcelPython provides a mechanism for normalizing the input arguments so that your function can safely make assumptions about their dimensionality.
+
+**work in progress...*
 
 ## Something a bit more interesting
 
@@ -61,6 +91,7 @@ We will now define a simple function for doing matrix multiplication using NumPy
     def MatrixMult(x, y):
         return x.dot(y)
     ```
+    
 * Click 'Import Python UDFs' to pick up the changes
 
 * The function `MatrixMult` can now be used as an array function from Excel
