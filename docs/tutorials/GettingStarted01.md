@@ -56,7 +56,7 @@ You can pass a range as a function argument, as opposed to a single cell. Its va
         return repr(x)
     ```
     
-    This function simply returns its argument converted to string representation. This will allow us to explore how the formula arguments are converted into Python objects.
+    This function simply returns its argument converted to string representation. This will allow us to explore how formula arguments are converted into Python objects.
     
 * Click 'Import Python UDFs' to pick up the changes
 
