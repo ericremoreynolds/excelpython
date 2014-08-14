@@ -5,6 +5,7 @@
 1. Download the latest [release](https://github.com/ericremoreynolds/excelpython/releases) and unzip it somewhere.
 1. Open the add-in `xlpython.xlam` in Excel.
 1. If all goes well you should see the ExcelPython tab in Excel's toolbar.
+
 ![image](https://cloud.githubusercontent.com/assets/5197585/3917034/3623f40a-2385-11e4-9754-5e3b924e38a9.png)
 
 Note that it is possible to [permanently install the add-in](#permanently-installing-the-excelpython-add-in) so you don't need to open it manually each time.
@@ -31,6 +32,7 @@ def DoubleSum(x, y):
 ```
 * Switch back to Excel and click 'Import Python UDFs' in the ExcelPython tab
 * Enter the formula `=DoubleSum(1, 2)` into a cell
+
 ![image](https://cloud.githubusercontent.com/assets/5197585/3917596/e5365b3c-238e-11e4-8bce-0d97caceca2e.png)
 
 ## Permanently installing the ExcelPython add-in
