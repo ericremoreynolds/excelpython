@@ -74,7 +74,43 @@ At this point it is worth talking about one of Excel's oddities, namely that the
 
 ExcelPython provides a mechanism for normalizing the input arguments so that your function can safely make assumptions about their dimensionality.
 
-**work in progress...*
+* Modify `Book1.py` as follows
+
+    ```python
+    @xlfunc
+    @xlarg("x", dims=2)         # add this line
+    def MyUDF(x):
+    	return str(x)
+    ```
+    
+* Click 'Import Python UDFs' to pick up the changes.
+
+* Now 1x1 ranges are passed as two-dimensional
+
+    ![image](https://cloud.githubusercontent.com/assets/5197585/3919574/8c257714-23aa-11e4-82d5-97da8b5a5fb2.png)
+
+At other times it you may want to assume that an argument that is one-dimensional
+
+* Modify `Book1.py` as follows
+
+    ```python
+    @xlfunc
+    @xlarg("x", dims=1)         # modify this line
+    def MyUDF(x):
+    	return str(x)
+    ```
+    
+* Click 'Import Python UDFs' to pick up the changes.
+
+* ![image](https://cloud.githubusercontent.com/assets/5197585/3919614/54cedaa2-23ab-11e4-8ba9-56dcd86815ad.png)
+
+    ![image](https://cloud.githubusercontent.com/assets/5197585/3919622/6b5ed790-23ab-11e4-9dce-52b45bb72717.png)
+
+    ![image](https://cloud.githubusercontent.com/assets/5197585/3919656/00f96f9a-23ac-11e4-8d7c-c1ae1896002e.png)
+
+* Clearly having specified the argument as one-dimensional, an error is raised if a two-dimensional range is passed
+
+    ![image](https://cloud.githubusercontent.com/assets/5197585/3919669/379cdd66-23ac-11e4-8e47-dfe333143a45.png)
 
 ## Something a bit more interesting
 
@@ -86,8 +122,8 @@ We will now define a simple function for doing matrix multiplication using NumPy
 
     ```python
     @xlfunc
-    @xlarg("x", "nparray", 2)
-    @xlarg("y", "nparray", 2)
+    @xlarg("x", "nparray", dims=2)
+    @xlarg("y", "nparray", dims=2)
     def MatrixMult(x, y):
         return x.dot(y)
     ```
