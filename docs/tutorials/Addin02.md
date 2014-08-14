@@ -2,7 +2,7 @@
 
 You can pass a range as a function argument, as opposed to a single cell. Its value will be converted to a tuple of tuples.
 
-* Add the following code to `Book1.py` from the previous section
+* Add the following code to `Book1.py` from the [previous tutorial](./Addin01.md)
 
     ```python
     @xlfunc
