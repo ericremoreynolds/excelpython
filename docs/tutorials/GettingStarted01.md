@@ -142,7 +142,7 @@ We will now define a simple function for doing matrix multiplication using NumPy
 
 ## Permanently installing the ExcelPython add-in
 
-The best place to put the ExcelPython add-in is in the Excel startup folder. All Excel files placed in this folder are automatically opened by Excel on startup, so if you place ExcelPython there you do not need to manually open it each time you want to use it. The `xlpython.xlam` file must be placed in the `XLSTART` folder and the `xlpython` folder must be copied alongside it like so:
+The best place to put the ExcelPython add-in is in the Excel startup folder. All files placed in this folder are automatically opened by Excel on startup, so if you place ExcelPython there you do not need to manually open it each time you want to use it. The `xlpython.xlam` file must be placed in the `XLSTART` folder and the `xlpython` folder must be copied alongside it like so:
 
 ![image](https://cloud.githubusercontent.com/assets/5197585/3917303/0ef6b35e-238a-11e4-9017-ab8cdb74719d.png)
 
