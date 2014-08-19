@@ -1,4 +1,5 @@
 import sys
+import types
 import pythoncom
 import pywintypes
 import win32com.client
@@ -62,17 +63,21 @@ class XLPythonEnumerator:
 	def Clone(self):
 		raise win32com.server.exception.COMException(scode = 0x80004001)  # E_NOTIMPL
 
+PyIDispatch = pythoncom.TypeIIDs[pythoncom.IID_IDispatch]
 def FromVariant(var):
 	try:
-		return win32com.server.util.unwrap(var).obj
+		obj = win32com.server.util.unwrap(var).obj
 	except:
-		return var
+		obj = var
+	if type(obj) is PyIDispatch:
+		obj = win32com.client.Dispatch(obj)
+	return obj
 
 def ToVariant(obj):
 	return win32com.server.util.wrap(XLPythonObject(obj))
 
 class XLPython(object):
-	_public_methods_ = [ 'Module', 'Tuple', 'TupleFromArray', 'Dict', 'DictFromArray', 'List', 'ListFromArray', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'DelItem', 'Contains', 'GetAttr', 'SetAttr', 'DelAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Builtin', 'Len']
+	_public_methods_ = [ 'Module', 'Tuple', 'TupleFromArray', 'Dict', 'DictFromArray', 'List', 'ListFromArray', 'Obj', 'Str', 'Var', 'Call', 'GetItem', 'SetItem', 'DelItem', 'Contains', 'GetAttr', 'SetAttr', 'DelAttr', 'HasAttr', 'Eval', 'Exec', 'ShowConsole', 'Builtin', 'Len', 'Bool' ]
 	
 	def ShowConsole(self):
 		import ctypes
@@ -123,8 +128,8 @@ class XLPython(object):
 	def List(self, *elements):
 		return ToVariant(list((FromVariant(e) for e in elements)))
 		
-	def Obj(self, var):
-		return ToVariant(FromVariant(var))
+	def Obj(self, var, dispatch=True):
+		return ToVariant(FromVariant(var, dispatch))
 		
 	def Str(self, obj):
 		return str(FromVariant(obj))
@@ -139,6 +144,8 @@ class XLPython(object):
 				value = value.tolist()
 		if type(value) is tuple:
 			return (value,)
+		# elif isinstance(value, types.InstanceType) and value.__class__ is win32com.client.CDispatch:
+			# return value._oleobj_
 		else:
 			return value
 		
@@ -163,6 +170,13 @@ class XLPython(object):
 	def Len(self, obj):
 		obj = FromVariant(obj)
 		return len(obj)
+		
+	def Bool(self, obj):
+		obj = FromVariant(obj)
+		if obj:
+			return True
+		else:
+			return False
 		
 	def Builtin(self):
 		import __builtin__

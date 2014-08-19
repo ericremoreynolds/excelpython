@@ -1,7 +1,8 @@
 __all__ = [
 	"xlfunc",
 	"xlret",
-	"xlarg"
+	"xlarg",
+	"xlsub"
 	]
 
 def xlfunc(f):
@@ -9,6 +10,7 @@ def xlfunc(f):
 		xlf = f.__xlfunc__ = {}
 		xlf = f.__xlfunc__ = {}
 		xlf["name"] = f.__name__
+		xlf["sub"] = False
 		xlargs = xlf["args"] = []
 		xlargmap = xlf["argmap"] = {}
 		for vpos, vname in enumerate(f.__code__.co_varnames[:f.__code__.co_argcount]):
@@ -16,6 +18,7 @@ def xlfunc(f):
 				"name": vname,
 				"pos": vpos,
 				"marshal": "var",
+				"vba": None,
 				"range": False,
 				"dtype": None,
 				"dims": -1,
@@ -27,6 +30,11 @@ def xlfunc(f):
 			"lax": True,
 			"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.func_code.co_filename) + "'."
 		}
+	return f
+	
+def xlsub(f):
+	f = xlfunc(f)
+	f.__xlfunc__["sub"] = True
 	return f
 
 xlretparams = set(("marshal", "lax", "doc"))
@@ -44,7 +52,7 @@ def xlret(marshal=None, **kwargs):
 		return f
 	return inner
 	
-xlargparams = set(("marshal", "dims", "dtype", "range", "doc"))
+xlargparams = set(("marshal", "dims", "dtype", "range", "doc", "vba"))
 def xlarg(arg, marshal=None, dims=None, **kwargs):
 	if marshal is not None:
 		kwargs["marshal"] = marshal

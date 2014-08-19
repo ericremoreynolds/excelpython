@@ -64,6 +64,15 @@ Config::Config(const std::string& filename)
 
 	SplitPath(filename, values, "Config");
 	SplitPath(GetDLLPath(), values, "Dll");
+	std::string configDir;
+	if(TryGetValue("ConfigDir", configDir))
+	{
+		std::string workbookDir = configDir + "\\..";
+		char workbookDirOut[MAX_PATH];
+		if(0 == GetFullPathNameA(workbookDir.c_str(), MAX_PATH, workbookDirOut, NULL))
+			throw formatted_exception() << "GetFullPathNameA failed: " << GetLastErrorMessage() << "\n" << "Argument: " << workbookDir;
+		values["WorkbookDir"] = workbookDirOut;
+	}
 	AddEnvironmentVariables(values);
 
 	GUID guid;
