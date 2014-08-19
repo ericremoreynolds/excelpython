@@ -1,6 +1,6 @@
 # Writing macros in Python
 
-In addition to writing user-defined functions, VBA is typically used for defining macros to automate some procedure in Excel.
+In addition to writing user-defined functions, VBA is typically used for defining macros to automate Excel.
 
 * Add the following code to `Book1.py` from the previous tutorial.
 
@@ -24,8 +24,8 @@ In addition to writing user-defined functions, VBA is typically used for definin
 
 To understand the above code, let's go through it line by line.
 
-* `@xlsub` marks the Python as a function which should be wrapped as a VBA subprocedure rather than a function
-* `@xlarg("app", vba="Application")` indicates that the `app` argument should be hard-coded to the VBA expression specified - in this case the `Application` object. Using the `vba=` keyword results in the argument being removed from the argument list in Excel. As such our macro does not have any arguments in Excel - indeed buttons can only be associated with macros with zero parameters.
-* `app.StatusBar = str(datetime.now())` - once inside the function, the `app` variable has been set to the Excel `Application` object, and in this line we set the status bar message to the current date and time.
+* `@xlsub` indicates that `my_macro` should be wrapped as a VBA subroutine rather than as a VBA function
+* `@xlarg("app", vba="Application")` indicates that the `app` argument should be hard-coded to the VBA expression specified - in this case the `Application` object. Using the `vba=` keyword results in the argument being removed from the argument list in Excel. As such our macro does not have any arguments in Excel - indeed, buttons can only be associated with macros with zero parameters.
+* `app.StatusBar = str(datetime.now())`. Once inside the function, the `app` variable has been set to the Excel `Application` object, and in this line we set the status bar message to the current date and time.
 
 To continue move onto the [next tutorial](./Addin05.md).
