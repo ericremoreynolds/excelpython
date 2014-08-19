@@ -16,7 +16,9 @@ In addition to writing user-defined functions, VBA is typically used for definin
 
 * From the Developer tab, select Insert > Form Controls > Button and create the button on Sheet2. You should be prompted to select the macro you want to run when the button is clicked, and should be able to select `my_macro`.
 
-* If all has gone according to plan, clicking the button will update Excel's status bar with the current date and time:
+    Note that the Developer tab is usually not visible by default. You can enable it from the Excel Options panel.
+    
+* If all has gone according to plan, clicking the button will update Excel's status bar (at the bottom of the window) with the current date and time:
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3968943/17015b82-27bb-11e4-9ba9-b6b6026dc5d4.png)
 
