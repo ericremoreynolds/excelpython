@@ -1,5 +1,7 @@
 # ExcelPython v2
 
+Write Excel user-defined functions in Python!
+
 ```python
 from xlpython import *
 
