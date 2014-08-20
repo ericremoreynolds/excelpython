@@ -25,7 +25,16 @@ In addition to writing user-defined functions, VBA is typically used for definin
 To understand the above code, let's go through it line by line.
 
 * `@xlsub` indicates that `my_macro` should be wrapped as a VBA subroutine rather than as a VBA function
-* `@xlarg("app", vba="Application")` indicates that the `app` argument should be hard-coded to the VBA expression specified - in this case the `Application` object. Using the `vba=` keyword results in the argument being removed from the argument list in Excel. As such our macro does not have any arguments in Excel - indeed, buttons can only be associated with macros with zero parameters.
+* `@xlarg("app", vba="Application")` indicates that the `app` argument should be hard-coded to the VBA expression specified, in this case the `Application` object. Using the `vba` keyword results in the argument being removed from the argument list in Excel. As such our macro does not have any arguments in Excel - indeed, buttons can only be associated with macros with zero parameters.
 * `app.StatusBar = str(datetime.now())`. Once inside the function, the `app` variable has been set to the Excel `Application` object, and in this line we set the status bar message to the current date and time.
+
+Another example of how to use this functionality is to manipulate a worksheet. The following macro copies the contents of cell A1 into cell A2 in Sheet2.
+
+```python
+@xlsub
+@xlarg("sheet", vba="Sheet2")
+def my_other_macro(sheet):
+    sheet.Range("A2").Value = sheet.Range("A1").Value
+```
 
 To continue move onto the [next tutorial](./Addin05.md).
