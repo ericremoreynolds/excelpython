@@ -88,8 +88,8 @@ class XLPython(object):
 	
 	def Module(self, module, reload=False):
 		vars = {}
-		exec "import " + module in vars
-		m = vars[module]
+		exec "import " + module + " as the_module" in vars
+		m = vars["the_module"]
 		if reload:
 			m = __builtins__.reload(m)
 		return ToVariant(m)

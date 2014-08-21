@@ -5,37 +5,48 @@ __all__ = [
 	"xlsub"
 	]
 
-def xlfunc(f):
-	if not hasattr(f, "__xlfunc__"):
-		xlf = f.__xlfunc__ = {}
-		xlf = f.__xlfunc__ = {}
-		xlf["name"] = f.__name__
-		xlf["sub"] = False
-		xlargs = xlf["args"] = []
-		xlargmap = xlf["argmap"] = {}
-		for vpos, vname in enumerate(f.__code__.co_varnames[:f.__code__.co_argcount]):
-			xlargs.append({
-				"name": vname,
-				"pos": vpos,
-				"marshal": "var",
-				"vba": None,
-				"range": False,
-				"dtype": None,
-				"dims": -1,
-				"doc": "Positional argument " + str(vpos+1)
-			})
-			xlargmap[vname] = xlargs[-1]
-		xlf["ret"] = {
-			"marshal": "auto",
-			"lax": True,
-			"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.func_code.co_filename) + "'."
-		}
-	return f
+def xlfunc(f = None, **kwargs):
+	def inner(f):
+		if not hasattr(f, "__xlfunc__"):
+			xlf = f.__xlfunc__ = {}
+			xlf = f.__xlfunc__ = {}
+			xlf["name"] = f.__name__
+			xlf["sub"] = False
+			xlf["xlwings"] = kwargs.get("xlwings", None)
+			xlargs = xlf["args"] = []
+			xlargmap = xlf["argmap"] = {}
+			for vpos, vname in enumerate(f.__code__.co_varnames[:f.__code__.co_argcount]):
+				xlargs.append({
+					"name": vname,
+					"pos": vpos,
+					"marshal": "var",
+					"vba": None,
+					"range": False,
+					"dtype": None,
+					"dims": -1,
+					"doc": "Positional argument " + str(vpos+1)
+				})
+				xlargmap[vname] = xlargs[-1]
+			xlf["ret"] = {
+				"marshal": "auto",
+				"lax": True,
+				"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.func_code.co_filename) + "'."
+			}
+		return f
+	if f is None:
+		return inner
+	else:
+		return inner(f)
 	
-def xlsub(f):
-	f = xlfunc(f)
-	f.__xlfunc__["sub"] = True
-	return f
+def xlsub(f = None, **kwargs):
+	def inner(f):
+		f = xlfunc(**kwargs)(f)
+		f.__xlfunc__["sub"] = True
+		return f
+	if f is None:
+		return inner
+	else:
+		return inner(f)
 
 xlretparams = set(("marshal", "lax", "doc"))
 def xlret(marshal=None, **kwargs):
