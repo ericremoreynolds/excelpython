@@ -377,7 +377,7 @@ void Config::ActivateRPCServer()
 		{
 			hJobAuto.handle = CreateJobObject(NULL, NULL);
 			if(NULL == hJobAuto.handle)
-				throw formatted_exception() << "CreateJobObject failed.";
+				throw formatted_exception() << "CreateJobObject failed:" << GetLastErrorMessage();
 			
 			JOBOBJECT_EXTENDED_LIMIT_INFORMATION jxli;
 			ZeroMemory(&jxli, sizeof(jxli));
@@ -387,7 +387,17 @@ void Config::ActivateRPCServer()
 		}
 
 		// create the Python process
-		if(!CreateProcessA(NULL, cmdLine, NULL, NULL, TRUE, 0, envStr.p, workingDir.c_str(), &si, &pi))
+		if(!CreateProcessA(
+			NULL, 
+			cmdLine, 
+			NULL, 
+			NULL, 
+			TRUE, 
+			NORMAL_PRIORITY_CLASS | CREATE_BREAKAWAY_FROM_JOB, 
+			envStr.p, 
+			workingDir.c_str(), 
+			&si, 
+			&pi))
 		{
 			formatted_exception e;
 			e << "Could not create Python process.\n";
@@ -402,7 +412,7 @@ void Config::ActivateRPCServer()
 		if(hJobAuto.handle != NULL)
 		{
 			if(!AssignProcessToJobObject(hJobAuto.handle, pi.hProcess))
-				throw formatted_exception() << "AssignProcessToJobObject failed.";
+				throw formatted_exception() << "AssignProcessToJobObject failed: " << GetLastErrorMessage();
 		}
 
 		// now repeatedly try to create the Python interface object, waiting up to 1 minute to do it
@@ -416,7 +426,7 @@ void Config::ActivateRPCServer()
 			// didn't create object - check that python process is still there!
 			DWORD dwExitCode;
 			if(0 == GetExitCodeProcess(pi.hProcess, &dwExitCode))
-				throw formatted_exception() << "GetExitCodeProcess failed.";
+				throw formatted_exception() << "GetExitCodeProcess failed: " << GetLastErrorMessage();
 			if(dwExitCode != STILL_ACTIVE)
 			{
 				formatted_exception e;
