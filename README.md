@@ -12,9 +12,9 @@ def matrixmult(x, y):
     return x.dot(y)
 ```
 
-Check out the [tutorials](docs/) to help you get going. The only prerequisites are Excel and Python (2.6 - 3.x) with PyWin32 installed.
-
 ![image](https://cloud.githubusercontent.com/assets/5197585/3907706/6c3a2cea-22fd-11e4-812f-41c814d1cc54.png)
+
+Check out the [tutorials](docs/) to get started! The only prerequisites are Excel and Python (2.6 - 3.x) with PyWin32 installed.
 
 ### About ExcelPython
 
