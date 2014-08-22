@@ -49,7 +49,7 @@ class XLPythonEnumerator:
 	def Next(self, count):
 		r = []
 		try:
-			r.append(ToVariant(self.iter.next()))
+			r.append(ToVariant(next(self.iter)))
 		except StopIteration:
 			pass
 		return r
@@ -88,19 +88,11 @@ class XLPython(object):
 	
 	def Module(self, module, reload=False):
 		vars = {}
-		exec "import " + module + " as the_module" in vars
+		exec("import " + module + " as the_module", vars)
 		m = vars["the_module"]
 		if reload:
 			m = __builtins__.reload(m)
 		return ToVariant(m)
-		
-	# def Reload(self, reload=True):
-		# return ToVariant(XLPythonOption('reload', reload))
-
-	# def AddPath(self, path):
-		# if isinstance(path, unicode):
-			# path = path.split(";")
-		# return ToVariant(XLPythonOption('addpath', path))
 		
 	def TupleFromArray(self, elements):
 		return self.Tuple(*elements)
@@ -156,12 +148,13 @@ class XLPython(object):
 		kwargs = {}
 		for arg in args:
 			arg = FromVariant(arg)
-			if isinstance(arg, unicode):
-				method = arg
-			elif isinstance(arg, tuple):
+			if isinstance(arg, tuple):
 				pargs = arg
 			elif isinstance(arg, dict):
 				kwargs = arg
+			else:
+				# assume string
+				method = arg
 		if method is None:
 			return ToVariant(obj(*pargs, **kwargs))
 		else:
@@ -248,7 +241,7 @@ class XLPython(object):
 					raise Exception("Exec can be called with at most 2 dictionary arguments")
 			else:
 				pass
-		exec stmt in globals, locals
+		exec(stmt, globals, locals)
 		
 # --- ovveride CreateInstance in default policy to instantiate the XLPython object ---
 

@@ -30,7 +30,7 @@ def xlfunc(f = None, **kwargs):
 			xlf["ret"] = {
 				"marshal": "auto",
 				"lax": True,
-				"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.func_code.co_filename) + "'."
+				"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.__code__.co_filename) + "'."
 			}
 		return f
 	if f is None:
@@ -92,6 +92,7 @@ def udf_script(filename):
 		if mtime == mtime2:
 			return vars
 	vars = {}
-	execfile(filename, vars)
+	with open(filename, "r") as f:
+		exec(compile(f.read(), filename, "exec"), vars)
 	udf_scripts[filename] = (mtime, vars)
 	return vars
