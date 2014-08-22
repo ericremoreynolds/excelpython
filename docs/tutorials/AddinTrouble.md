@@ -20,6 +20,4 @@ This is probably because you don't have Python installed on your machine. If you
 
 This means that there was an error in running the ExcelPython server script (`xlpyserver.py`) and it can happen for many reasons.
 
-The most likely cause is that you haven't installed the [Python for Windows extensions (PyWin32)](http://sourceforge.net/projects/pywin32/) library into your Python distribution.
-
-Failing this you should consult the specified log file, which will show you the output of the Python interpreter including any errors that might have been raised during the script's execution.
+The most likely cause is that you haven't installed the [Python for Windows extensions (PyWin32)](http://sourceforge.net/projects/pywin32/) library into your Python distribution. Failing this you should consult the specified log file, which will show you the output of the Python interpreter including any errors that might have been raised during the script's execution.
