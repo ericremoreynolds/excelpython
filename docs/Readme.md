@@ -6,6 +6,8 @@
 1. [Writing macros in Python](tutorials/Addin04.md)
 1. [Permanently installing the add-in](tutorials/Addin05.md)
 
+If you encounter any issues in getting the add-in set up consult the [troubleshooting guide](tutorials/AddinTrouble.md).
+
 **Learn how to manipulate Python objects in VBA**
 
 1. [A very simple usage example](tutorials/Usage01.md)
