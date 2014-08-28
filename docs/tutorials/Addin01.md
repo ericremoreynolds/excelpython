@@ -20,7 +20,7 @@ To interact with Python, a workbook must first be setup to use ExcelPython. To d
 
 * From the ExcelPython tab in the toolbar click 'Setup ExcelPython'.
 
-Next write your user-defined function in Python. In the previous step ExcelPython will have created a file called `Book1.py` in the same folder as `Book1.xlsm` in which the Python functions to be used in the workbook can be defined. 
+Next write your user-defined function in Python. In the previous step ExcelPython will have created a file called `Book1.py` in the same folder as `Book1.xlsm` in which the Python functions to be used in the workbook must be defined. 
 
 * Edit `Book1.py` to contain the following code:
 
