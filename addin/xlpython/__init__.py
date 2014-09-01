@@ -55,7 +55,7 @@ def xlret(marshal=None, **kwargs):
 	def inner(f):
 		xlf = xlfunc(f).__xlfunc__
 		xlr = xlf["ret"]
-		for k, v in kwargs.iteritems():
+		for k, v in kwargs.items():
 			if k in xlretparams:
 				xlr[k] = v
 			else:
@@ -74,7 +74,7 @@ def xlarg(arg, marshal=None, dims=None, **kwargs):
 		if arg not in xlf["argmap"]:
 			raise Exception("Invalid argument name '" + arg + "'.")
 		xla = xlf["argmap"][arg]
-		for k, v in kwargs.iteritems():
+		for k, v in kwargs.items():
 			if k in xlargparams:
 				xla[k] = v
 			else:

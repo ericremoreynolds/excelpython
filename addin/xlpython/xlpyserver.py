@@ -131,7 +131,7 @@ class XLPython(object):
 		if lax:
 			t = type(value)
 			if t is dict:
-				value = tuple(value.iteritems())
+				value = tuple(value.items())
 			elif t.__name__ == 'ndarray' and t.__module__ == 'numpy':
 				value = value.tolist()
 		if type(value) is tuple:
