@@ -106,7 +106,7 @@ class XLPython(object):
 	def Dict(self, *kvpairs):
 		if len(kvpairs) % 2 != 0:
 			raise Exception("Arguments must be alternating keys and values.")
-		n = len(kvpairs) / 2
+		n = int(len(kvpairs) / 2)
 		d = {}
 		for k in range(n):
 			key = FromVariant(kvpairs[2*k])
