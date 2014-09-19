@@ -20,6 +20,10 @@ Check out the [tutorials](docs/) to get started! The only prerequisites are Exce
 
 ExcelPython is a lightweight, easily distributable library for interfacing Excel and Python. It enables easy access to Python scripts from Excel VBA, allowing you to substitute VBA with Python for complex automation tasks which would be facilitated by Python's extensive standard library while sparing you the complexities of Python COM programming.
 
+Do you like ExcelPython and find it useful? If so please consider donating something to support its continued development, and get your name on the donator list!
+
+<a href='https://pledgie.com/campaigns/26772'><img alt='Click here to lend your support to: ExcelPython and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/26772.png?skin_name=chrome' border='0' ></a>
+
 ### Help me!
 
 Check out the [docs](docs/) folder for tutorials to help you get started and links to other resources. Failing that, try the [issues section](https://github.com/ericremoreynolds/excelpython/issues?q=) or the [discussion forum on SourceForge](https://sourceforge.net/p/excelpython/discussion/general/).
