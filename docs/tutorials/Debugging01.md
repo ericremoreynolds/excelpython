@@ -1,6 +1,6 @@
 ## Debugging code with ExcelPython
 
-ExcelPython does not have any special provision for debugging Python code because it is fully compatible with existing Python debugging tools. Here we will see how to set up a couple of the most widely-used ones.
+ExcelPython does not have any special provision for debugging Python code because it is fully compatible with existing Python debugging tools. Here we will see how to set up a couple of the most widely-used ones, [Python Tools for Visual Studio](#debugging-with-python-tools-for-visual-studio) and [PyDev](#debugging-with-eclipse-and-pydev).
 
 ## Debugging with Python Tools for Visual Studio
 
@@ -60,3 +60,6 @@ Now you can set breakpoints in the code and the next time your function is invok
 
 ![image](https://cloud.githubusercontent.com/assets/5197585/4388088/59fefbaa-43e6-11e4-945a-31d66d3e2730.png)
 
+## Debugging with Eclipse and PyDev
+
+Coming soon!
