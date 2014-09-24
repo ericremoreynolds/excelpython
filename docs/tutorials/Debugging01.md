@@ -13,7 +13,7 @@ On Windows it is possible to debug Python scripts in Microsoft Visual Studio usi
 
 Assuming you've done steps 1 and 2, step 3 can be achieved using [PIP](https://pypi.python.org/pypi/pip).
 
-```
+```python
 C:\>pip install ptvsd
 Downloading/unpacking ptvsd
   Running setup.py (path:c:\docume~1\user\locals~1\temp\pip_build_user\ptvsd\setup.py) egg_info for package ptvsd
