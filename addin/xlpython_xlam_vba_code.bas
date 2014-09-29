@@ -139,10 +139,20 @@ Sub ImportPythonUDFs(control As IRibbonControl)
             
             f.Write ftype + " " + fname + "("
             first = True
+            vararg = ""
+            nArgs = Py.Len(Py.GetItem(xlfunc, "args"))
             For Each arg In Py.GetItem(xlfunc, "args")
                 If Not Py.Bool(Py.GetItem(arg, "vba")) Then
+                    argname = Py.Str(Py.GetItem(arg, "name"))
                     If Not first Then f.Write ", "
-                    f.Write Py.Str(Py.GetItem(arg, "name"))
+                    If Py.Bool(Py.GetItem(arg, "vararg")) Then
+                        f.Write "ParamArray "
+                        vararg = argname
+                    End If
+                    f.Write argname
+                    If Py.Bool(Py.GetItem(arg, "vararg")) Then
+                        f.Write "()"
+                    End If
                     first = False
                 End If
             Next arg
@@ -151,9 +161,17 @@ Sub ImportPythonUDFs(control As IRibbonControl)
                 f.WriteLine sTab + "If TypeOf Application.Caller Is Range Then On Error GoTo failed"
             End If
             
+            If vararg <> "" Then
+                f.WriteLine sTab + "ReDim argsArray(1 to UBound(" + vararg + ") - LBound(" + vararg + ") + " + CStr(nArgs) + ")"
+            End If
+            j = 1
             For Each arg In Py.GetItem(xlfunc, "args")
                 If Not Py.Bool(Py.GetItem(arg, "vba")) Then
                     argname = Py.Str(Py.GetItem(arg, "name"))
+                    If Py.Bool(Py.GetItem(arg, "vararg")) Then
+                        f.WriteLine sTab + "For k = lbound(" + vararg + ") to ubound(" + vararg + ")"
+                        argname = vararg + "(k)"
+                    End If
                     If Not Py.Var(Py.GetItem(arg, "range")) Then
                         f.WriteLine sTab + "If TypeOf " + argname + " Is Range Then " + argname + " = " + argname + ".Value2"
                     End If
@@ -176,21 +194,34 @@ Sub ImportPythonUDFs(control As IRibbonControl)
                         End If
                         f.WriteLine sTab + "End If"
                     End If
+                    If Py.Bool(Py.GetItem(arg, "vararg")) Then
+                        f.WriteLine sTab + "argsArray(" + CStr(j) + " + k - LBound(" + vararg + ")) = " + argname
+                        f.WriteLine sTab + "Next k"
+                    Else
+                        If vararg <> "" Then
+                            f.WriteLine sTab + "argsArray(" + CStr(j) + ") = " + argname
+                            j = j + 1
+                        End If
+                    End If
                 End If
             Next arg
             
-            f.Write sTab + "Set args = Py.Tuple("
-            first = True
-            For Each arg In Py.GetItem(xlfunc, "args")
-                If Not first Then f.Write ", "
-                If Not Py.Bool(Py.GetItem(arg, "vba")) Then
-                    f.Write Py.Str(Py.GetItem(arg, "name"))
-                Else
-                    f.Write Py.Str(Py.GetItem(arg, "vba"))
-                End If
-                first = False
-            Next arg
-            f.WriteLine ")"
+            If vararg <> "" Then
+                f.WriteLine sTab + "Set args = Py.TupleFromArray(argsArray)"
+            Else
+                f.Write sTab + "Set args = Py.Tuple("
+                first = True
+                For Each arg In Py.GetItem(xlfunc, "args")
+                    If Not first Then f.Write ", "
+                    If Not Py.Bool(Py.GetItem(arg, "vba")) Then
+                        f.Write Py.Str(Py.GetItem(arg, "name"))
+                    Else
+                        f.Write Py.Str(Py.GetItem(arg, "vba"))
+                    End If
+                    first = False
+                Next arg
+                f.WriteLine ")"
+            End If
             
             If Py.Bool(Py.GetItem(xlfunc, "xlwings")) Then
                 f.WriteLine sTab + "Py.SetAttr Py.GetAttr(Py.Module(""xlwings""), ""xlplatform""), ""xl_app_latest"", Application"
@@ -243,18 +274,18 @@ not_present:
             For Each arg In xlargs
                 If Not Py.Bool(Py.GetItem(arg, "vba")) Then nArgs = nArgs + 1
             Next arg
-            If nArgs > 0 And Application.Version >= 14 Then
+            If nArgs > 0 And Val(Application.Version) >= 14 Then
                 ReDim argdocs(1 To WorksheetFunction.Max(1, nArgs)) As String
                 nArgs = 0
                 For Each arg In xlargs
                     If Not Py.Bool(Py.GetItem(arg, "vba")) Then
                         nArgs = nArgs + 1
-                        argdocs(nArgs) = Py.Str(Py.GetItem(arg, "doc"))
+                        argdocs(nArgs) = Left$(Py.Str(Py.GetItem(arg, "doc")), 255)
                     End If
                 Next arg
-                XLPMacroOptions2010 "'" + wb.name + "'!" + fname, fdoc, argdocs
+                XLPMacroOptions2010 "'" + wb.name + "'!" + fname, Left$(fdoc, 255), argdocs
             Else
-                Application.MacroOptions "'" + wb.name + "'!" + fname, Description:=fdoc
+                Application.MacroOptions "'" + wb.name + "'!" + fname, Description:=Left$(fdoc, 255)
             End If
         End If
     Next svar

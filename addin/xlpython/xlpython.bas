@@ -2,16 +2,29 @@ Attribute VB_Name = "xlpython"
 Option Private Module
 Option Explicit
 
-#If win64 Then
-    Const XLPyDLLName As String = "xlpython64-2.0.5.dll"
-    Declare Function XLPyDLLActivate Lib "xlpython64-2.0.5.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
-    Declare Function XLPyDLLNDims Lib "xlpython64-2.0.5.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+#If VBA7 Then
+	#If win64 Then
+		Const XLPyDLLName As String = "xlpython64-2.0.6.dll"
+		Declare Function PtrSafe XLPyDLLActivate Lib "xlpython64-2.0.6.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
+		Declare Function PtrSafe XLPyDLLNDims Lib "xlpython64-2.0.6.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+	#Else
+		Private Const XLPyDLLName As String = "xlpython32-2.0.6.dll"
+		Private Declare PtrSafe Function XLPyDLLActivate Lib "xlpython32-2.0.6.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
+		Private Declare PtrSafe Function XLPyDLLNDims Lib "xlpython32-2.0.6.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+	#End If
+	Private Declare PtrSafe Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
 #Else
-    Private Const XLPyDLLName As String = "xlpython32-2.0.5.dll"
-    Private Declare Function XLPyDLLActivate Lib "xlpython32-2.0.5.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
-    Private Declare Function XLPyDLLNDims Lib "xlpython32-2.0.5.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
-#End If
-Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
+	#If win64 Then
+		Const XLPyDLLName As String = "xlpython64-2.0.6.dll"
+		Declare Function XLPyDLLActivate Lib "xlpython64-2.0.6.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
+		Declare Function XLPyDLLNDims Lib "xlpython64-2.0.6.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+	#Else
+		Private Const XLPyDLLName As String = "xlpython32-2.0.6.dll"
+		Private Declare Function XLPyDLLActivate Lib "xlpython32-2.0.6.dll" (ByRef result As Variant, Optional ByVal config As String = "") As Long
+		Private Declare Function XLPyDLLNDims Lib "xlpython32-2.0.6.dll" (ByRef src As Variant, ByRef dims As Long, ByRef transpose As Boolean, ByRef dest As Variant) As Long
+	#End If
+	Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryA" (ByVal lpLibFileName As String) As Long
+#EndIf
 
 Private Function XLPyFolder() As String
     XLPyFolder = ThisWorkbook.Path + "\xlpython"

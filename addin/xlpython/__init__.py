@@ -15,7 +15,10 @@ def xlfunc(f = None, **kwargs):
 			xlf["xlwings"] = kwargs.get("xlwings", None)
 			xlargs = xlf["args"] = []
 			xlargmap = xlf["argmap"] = {}
-			for vpos, vname in enumerate(f.__code__.co_varnames[:f.__code__.co_argcount]):
+			nArgs = f.__code__.co_argcount
+			if f.__code__.co_flags & 4:		# function has an '*args' argument
+				nArgs += 1
+			for vpos, vname in enumerate(f.__code__.co_varnames[:nArgs]):
 				xlargs.append({
 					"name": vname,
 					"pos": vpos,
@@ -24,7 +27,8 @@ def xlfunc(f = None, **kwargs):
 					"range": False,
 					"dtype": None,
 					"dims": -1,
-					"doc": "Positional argument " + str(vpos+1)
+					"doc": "Positional argument " + str(vpos+1),
+					"vararg": True if vpos == f.__code__.co_argcount else False
 				})
 				xlargmap[vname] = xlargs[-1]
 			xlf["ret"] = {
