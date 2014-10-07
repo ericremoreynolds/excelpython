@@ -1,4 +1,5 @@
 import sys
+import fix_anaconda_pywin32
 import types
 import pythoncom
 import pywintypes

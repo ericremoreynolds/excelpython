@@ -7,3 +7,4 @@ Release/
 *.pyo
 *.pyc
 *.dll
+/installer/*.exe
