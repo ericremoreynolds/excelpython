@@ -2,6 +2,8 @@ name: "ExcelPython - Write Excel UDFs in Python!"
 description: "ExcelPython is a free and open-source Microsoft Excel add-in which allows you to easily write user-defined functions and macros in Python instead of VBA."
 keywords: "Excel, VBA, Alternative, Python, Macro, UDF, Spreadsheet, open-source"
 
+baseurl: "/excelpython/"
+
 markdown: redcarpet
 redcarpet:
   extensions: ['autolink', 'tables']
