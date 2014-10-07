@@ -32,7 +32,7 @@ def xlfunc(f = None, **kwargs):
 				})
 				xlargmap[vname] = xlargs[-1]
 			xlf["ret"] = {
-				"marshal": "auto",
+				"marshal": "var",
 				"lax": True,
 				"doc": f.__doc__ if f.__doc__ is not None else "Python function '" + f.__name__ + "' defined in '" + str(f.__code__.co_filename) + "'."
 			}
