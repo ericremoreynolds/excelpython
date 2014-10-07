@@ -1,0 +1,27 @@
+h1{
+    text-align: center;
+    /*font-weight: 700;*/
+    color: #e26901;
+
+}
+
+h2 {
+    padding-top: 0px;
+    text-align: center;
+    font-size: 160%;
+    font-weight: 700;
+}
+
+h4{
+    font-weight: 700;
+    color: #e26901;
+    text-align: center;
+    font-size: 140%;
+}
+
+h5{
+    font-weight: 700;
+    /*color: #e26901;*/
+    text-align: center;
+    font-size: 140%;
+}

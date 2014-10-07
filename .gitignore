@@ -1,10 +1,60 @@
-Debug/
-Release/
-*.suo
-*.user
-*.opensdf
-*.sdf
-*.pyo
-*.pyc
-*.dll
-/installer/*.exe
+.metadata
+*.py[cod]
+*~*
+
+# Config files
+*.cfg
+
+# SQLite Database
+*.db 
+
+logfiles
+.settings
+
+# Jekyll
+_site
+
+# Sphinx
+_build
+
+# PyCharm
+.idea
+
+# NetBeans
+/nbproject
+
+# Mac
+*.DS_Store
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+*.zip
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+MANIFEST
+
+# logs
+pip-log.txt
+log*
+
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
