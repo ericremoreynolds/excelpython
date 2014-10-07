@@ -10,7 +10,7 @@
     
 * You may get an error saying `Programmatic access to Visual Basic Project is not trusted`. If so check out the [add-in troubleshooting guide](./AddinTrouble.md).
 
-Note that it is possible to [permanently install the add-in](./Addin04.md) so you don't need to open it manually each time.
+Note that it is possible to [permanently install the add-in](./Addin05.md) so you don't need to open it manually each time.
 
 ## Writing a user-defined function in Python
 
