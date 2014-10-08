@@ -34,7 +34,9 @@ box: |
 </div>
 
 
-#### Check out the latest release on [GitHub][]
+#### <a href="https://github.com/ericremoreynolds/excelpython/releases/download/v2.0.6/excelpython-2.0.6.exe" class="btn btn-default"><img class="glyphicon glyphicon-download">Download the latest release!</a>
+
+Previous releases available on [GitHub][].
 
 <div>
 &nbsp;
