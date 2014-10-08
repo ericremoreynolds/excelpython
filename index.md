@@ -34,9 +34,9 @@ box: |
 </div>
 
 
-#### <a href="https://github.com/ericremoreynolds/excelpython/releases/download/v2.0.6/excelpython-2.0.6.exe" class="btn btn-warning"><span class="glyphicon glyphicon-download"></span> Download the latest release!</a>
+<center><a href="https://github.com/ericremoreynolds/excelpython/releases/download/v2.0.6/excelpython-2.0.6.exe" class="btn btn-warning"><span class="glyphicon glyphicon-download"></span> Download the latest release!</a></center>
 
-###### Previous releases available on [GitHub][].
+<center>Previous releases available on [GitHub][].</center>
 
 <div>
 &nbsp;
