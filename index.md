@@ -36,14 +36,15 @@ box: |
 
 <div style="text-align: center;"><a href="https://github.com/ericremoreynolds/excelpython/releases/download/v2.0.6/excelpython-2.0.6.exe" class="btn btn-warning"><span class="glyphicon glyphicon-download"></span> Download the latest release!</a></div>
 
-<div style="text-align: center;">Previous releases available on [GitHub][].</div>
-
 <div>
 &nbsp;
 </div>
 
+<div style="text-align: center;">Previous releases available on <a href="https://github.com/ericremoreynolds/excelpython/releases">GitHub</a>.</div>
 
-[GitHub]: https://github.com/ericremoreynolds/excelpython/releases
+<div>
+&nbsp;
+</div>
 
 <!--
 <div class="video-container">
