@@ -11,7 +11,7 @@ body {
 /* Narrow width of main container on desktop */
 @media (min-width: 1200px) {
   .container {
-    width: 750px;
+    width: 850px;
   }
 }
 
