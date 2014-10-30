@@ -10,9 +10,9 @@ except:
 import sys
 import os
 pywintypes_filename = "pywintypes%d%d.dll" % (sys.version_info[0], sys.version_info[1])
-pywintypes_found = _win32sysloader.GetModuleFilename(filename)
+pywintypes_found = _win32sysloader.GetModuleFilename(pywintypes_filename)
 if not pywintypes_found:
-	pywintypes_found = _win32sysloader.LoadModule(os.path.join(sys.prefix, 'lib', 'site-packages', 'win32', filename))
+	pywintypes_found = _win32sysloader.LoadModule(os.path.join(sys.prefix, 'lib', 'site-packages', 'win32', pywintypes_filename))
 
 # Import necessary modules
 import types
