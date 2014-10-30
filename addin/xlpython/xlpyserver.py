@@ -1,5 +1,20 @@
+# First of all see if we can load PyWin32
+try:
+	import _win32sysloader
+except:
+	raise Exception("Cannot import PyWin32. Are you sure it's installed?")
+
+# Anaconda and possibly other distributions have a bug in PyWin32, the `pythoncom` module can't be loaded because some required
+# DLLs are located in the wrong place, so they aren't found. This code forces Windows to load them with the full path so that
+# subsequent imports work correctly
 import sys
-import fix_anaconda_pywin32
+import os
+pywintypes_filename = "pywintypes%d%d.dll" % (sys.version_info[0], sys.version_info[1])
+pywintypes_found = _win32sysloader.GetModuleFilename(filename)
+if not pywintypes_found:
+	pywintypes_found = _win32sysloader.LoadModule(os.path.join(sys.prefix, 'lib', 'site-packages', 'win32', filename))
+
+# Import necessary modules
 import types
 import pythoncom
 import pywintypes

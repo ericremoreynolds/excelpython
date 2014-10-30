@@ -36,8 +36,8 @@ Name: "{app}\xlpython"
 [Files]
 Source: "..\addin\xlpython.xlam"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\addin\xlpython\*"; DestDir: "{app}\xlpython"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: IssProc.dll; DestDir: "{tmp}"; Flags: dontcopy
-Source: IssProc.dll; DestDir: "{pf}\ExcelPython"
+; Source: IssProc.dll; DestDir: "{tmp}"; Flags: dontcopy
+; Source: IssProc.dll; DestDir: "{pf}\ExcelPython"
 
 [Code]
 Function DefAppFolder(Param: String): String;

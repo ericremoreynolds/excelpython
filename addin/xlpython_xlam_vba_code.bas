@@ -177,9 +177,9 @@ Sub ImportPythonUDFs(control As IRibbonControl)
                     End If
                     dims = Py.Var(Py.GetItem(arg, "dims"))
                     marshal = Py.Str(Py.GetItem(arg, "marshal"))
-                    If dims <> -1 Or marshal = "nparray" Or marshal = "list" Then
+                    If dims <> -2 Or marshal = "nparray" Or marshal = "list" Then
                         f.WriteLine sTab + "If Not TypeOf " + argname + " Is Object Then"
-                        If dims <> -1 Then
+                        If dims <> -2 Then
                             f.WriteLine sTab + sTab + argname + " = NDims(" + argname + ", " + CStr(dims) + ")"
                         End If
                         If marshal = "nparray" Then

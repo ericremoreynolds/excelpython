@@ -55,6 +55,15 @@ HRESULT __stdcall XLPyDLLNDims(VARIANT* xlSource, int* xlDimension, bool *xlTran
 		int nDestDims = *xlDimension;
 		int nDestRows = nSrcRows;
 		int nDestCols = nSrcCols;
+		if(nDestDims == -1)
+		{
+			if(nSrcCols == 1 && nSrcRows == 1)
+				nDestDims = 0;
+			else if(nSrcCols == 1 || nSrcRows == 1)
+				nDestDims = 1;
+			else
+				nDestDims = 2;
+		}
 		if(nDestDims == 1 && nSrcDims == 2)
 		{
 			if(nSrcRows != 1 && nSrcCols != 1)
