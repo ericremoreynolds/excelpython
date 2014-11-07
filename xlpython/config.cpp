@@ -3,6 +3,7 @@
 #undef GetEnvironmentStrings // the windows headers screws this one up
 
 Config::ConfigMap Config::configs;
+Config::ConfigMap Config::autoConfigs;
 
 void SplitPath(const std::string& path, Config::ValueMap& values, const std::string& prefix)
 {
@@ -56,14 +57,53 @@ void AddEnvironmentVariables(Config::ValueMap& values)
 	}
 }
 
-Config::Config(const std::string& filename)
+Config::Config()
 	: pInterface(NULL)
 	, hJob(NULL)
+{
+	SplitPath(GetDLLPath(), values, "Dll");
+	AddEnvironmentVariables(values);
+
+	GUID guid;
+	NewGUID(guid);
+	values["CLSID"] = values["RandomGUID"] = GUIDToStdString(guid);
+}
+
+std::string Config::Preprocess(const std::string& raw)
+{
+	std::string value = raw;
+
+	while(true)
+	{
+		size_t itMacroStart = value.find("$(");
+		if(itMacroStart == std::string::npos)
+			break;
+		size_t itMacroEnd = value.find(")", itMacroStart);
+		if(itMacroStart == std::string::npos)
+			throw formatted_exception() << "Macro $(...) was not closed in line: " << raw << ".";
+			
+		std::string macro = value.substr(itMacroStart + 2, itMacroEnd - itMacroStart - 2);
+		std::string macroValue;
+		if(macro.length() > 0 && macro[0] == '?')
+			macroValue = GetValue(macro.substr(1), "");
+		else
+			macroValue = GetValue(macro);
+		value = value.replace(itMacroStart, itMacroEnd - itMacroStart + 1, macroValue);
+	}
+
+	return value;
+}
+
+void Config::SetupAutoConfig(const std::string& commandLine)
+{
+	values["Command"] = Preprocess(commandLine);
+}
+
+void Config::ParseConfigFile(const std::string& filename)
 {
 	GetLastWriteTime(filename.c_str(), &ftLastModify);
 
 	SplitPath(filename, values, "Config");
-	SplitPath(GetDLLPath(), values, "Dll");
 	std::string configDir;
 	if(TryGetValue("ConfigDir", configDir))
 	{
@@ -73,11 +113,6 @@ Config::Config(const std::string& filename)
 			throw formatted_exception() << "GetFullPathNameA failed: " << GetLastErrorMessage() << "\n" << "Argument: " << workbookDir;
 		values["WorkbookDir"] = workbookDirOut;
 	}
-	AddEnvironmentVariables(values);
-
-	GUID guid;
-	NewGUID(guid);
-	values["RandomGUID"] = GUIDToStdString(guid);
 
 	std::ifstream f(filename.c_str());
 
@@ -99,26 +134,8 @@ Config::Config(const std::string& filename)
 
 		std::string key = strtrim(line.substr(0, itEquals));
 		std::string value = strtrim(line.substr(itEquals + 1, line.length() - itEquals - 1));
-		
-		while(true)
-		{
-			size_t itMacroStart = value.find("$(");
-			if(itMacroStart == std::string::npos)
-				break;
-			size_t itMacroEnd = value.find(")", itMacroStart);
-			if(itMacroStart == std::string::npos)
-				throw formatted_exception() << "Macro $(...) was not closed in configuration file: " << line << ".";
-			
-			std::string macro = value.substr(itMacroStart + 2, itMacroEnd - itMacroStart - 2);
-			std::string macroValue;
-			if(macro.length() > 0 && macro[0] == '?')
-				macroValue = GetValue(macro.substr(1), "");
-			else
-				macroValue = GetValue(macro);
-			value = value.replace(itMacroStart, itMacroEnd - itMacroStart + 1, macroValue);
-		}
 
-		values[key] = value;
+		values[key] = Preprocess(value);
 	}
 }
 
@@ -133,6 +150,20 @@ Config::~Config()
 		CloseHandle(hJob);
 }
 
+Config* Config::GetAutoConfig(const std::string& command)
+{
+	Config::ConfigMap::iterator it = autoConfigs.find(command);
+	if(it == autoConfigs.end())
+	{
+		Config* c;
+		autoConfigs[command] = c = new Config();
+		c->SetupAutoConfig(command);
+		return c;
+	}
+	else
+		return it->second;
+}
+
 Config* Config::GetConfig(const std::string& filename)
 {
 	std::string fullpath;
@@ -142,7 +173,8 @@ Config* Config::GetConfig(const std::string& filename)
 	if(it == configs.end())
 	{
 		Config* c;
-		configs[fullpath] = c = new Config(fullpath);
+		configs[fullpath] = c = new Config();
+		c->ParseConfigFile(fullpath);
 		return c;
 	}
 	else
@@ -154,7 +186,8 @@ Config* Config::GetConfig(const std::string& filename)
 		{
 			delete it->second;
 			Config* c;
-			configs[fullpath] = c = new Config(fullpath);
+			configs[fullpath] = c = new Config();
+			c->ParseConfigFile(fullpath);
 			return c;
 		}
 
@@ -275,7 +308,7 @@ void Config::ActivateRPCServer()
 	if(hr == REGDB_E_CLASSNOTREG)
 	{
 		// build the command line with which to start the Python process
-		std::string workingDir = this->GetValue("WorkingDir");
+		std::string workingDir = this->HasValue("WorkingDir") ? this->GetValue("WorkingDir") : "<unspecified>";
 		std::string pythonCmd = this->GetValue("Command");
 		char cmdLine[2048] = "";
 		strcat_s(cmdLine, pythonCmd.c_str());
@@ -395,7 +428,7 @@ void Config::ActivateRPCServer()
 			TRUE, 
 			NORMAL_PRIORITY_CLASS | CREATE_BREAKAWAY_FROM_JOB, 
 			envStr.p, 
-			workingDir.c_str(), 
+			this->HasValue("WorkingDir") ? workingDir.c_str() : NULL, 
 			&si, 
 			&pi))
 		{

@@ -6,14 +6,19 @@ public:
 
 protected:
 	static ConfigMap configs;
+	static ConfigMap autoConfigs;
 
-	Config(const std::string& filename);
+	Config();
 	~Config();
 
+	void ParseConfigFile(const std::string& filename);
+	void SetupAutoConfig(const std::string& command);
+	std::string Config::Preprocess(const std::string& raw);
 	FILETIME ftLastModify;
 
 public:
 	static Config* GetConfig(const std::string& filename);
+	static Config* GetAutoConfig(const std::string& command);
 
 	std::string GetValue(const std::string& key);
 	std::string GetValue(const std::string& key, const std::string& dfault);

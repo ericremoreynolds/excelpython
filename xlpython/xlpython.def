@@ -2,4 +2,6 @@ LIBRARY
 
 EXPORTS
 	XLPyDLLActivate
+	XLPyDLLActivateAuto
 	XLPyDLLNDims
+	XLPyDLLVersion

@@ -161,3 +161,49 @@ HRESULT __stdcall XLPyDLLActivate(VARIANT* xlResult, const char* xlConfigFileNam
 		return E_FAIL;
 	}
 }
+
+
+// special configuration-less entry point for used by xlwings
+// just pass the command to launch the COM server, all other settings normally contained in the config file are default
+// returns existing interface if already available, otherwise tries to activate it
+HRESULT __stdcall XLPyDLLActivateAuto(VARIANT* xlResult, const char* xlCommand)
+{
+	try
+	{
+		VariantClear(xlResult);
+
+		// set default config file
+		std::string command = xlCommand;
+		if(command.empty())
+			throw formatted_exception() << "No command line specified";
+		Config* pConfig = Config::GetAutoConfig(command);
+
+		// if interface object isn't already available try to create it
+		if(pConfig->pInterface == NULL || !pConfig->CheckRPCServer())
+			pConfig->ActivateRPCServer();
+
+		// pass it back to VBA
+		xlResult->vt = VT_DISPATCH;
+		xlResult->pdispVal = pConfig->pInterface;
+		xlResult->pdispVal->AddRef();
+
+		return S_OK;
+	}
+	catch(const std::exception& e)
+	{
+		ToVariant(e.what(), xlResult);
+		return E_FAIL;
+	}
+}
+
+// returns a string identifying the DLL version
+BSTR __stdcall XLPyDLLVersion()
+{
+	std::string version("xlwings/1/win");
+#if _WIN64;
+	version += "64";
+#else
+	version += "32";
+#endif
+	return SysAllocStringByteLen(version.c_str(), version.size());
+}
