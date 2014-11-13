@@ -1,4 +1,4 @@
-A more practical use of xlpython
+A more practical use of ExcelPython
 ---
 
 The above example gives a light introduction to manipulating a few simple objects through VBA. In practice though, what's needed is a way to get a load of inputs from Excel, pass them to a method defined in a Python script somewhere, get the outputs back from Python and use them VBA or place them in the spreadsheet as required.
@@ -10,10 +10,10 @@ PyModule returns a pointer to a Python module, much like the import statement. I
     ?Py.Str(Py.Module("datetime"))
     <module 'datetime' (built-in)\>
 
-If you want to call functions from a script which you have placed in a non-standard location, you can tell xlpython to add additional search directories before trying to load the module, as follows:
+By default the Python instance associated with a workbook runs in that workbook's folder (as determined by `ThisWorkbook.Path`), so if you place a Python script in that folder, you can load it as a module.
 
-    ?Py.Str(Py.Module("MyScript", Py.AddPath("D:\Scripts")))
-    <module 'MyScript' from 'D:\Scripts\MyScript.py'\>
+    ?Py.Str(Py.Module("MyScript"))
+    <module 'MyScript' from 'C:\WorkbookFolder\MyScript.py'\>
 
 Once you have access to the module you want, you can use `Py.Call` to invoke functions contained in the module (note that `Py.Call` actually calls any method of any object, not just module objects). This is done by explicitly passing the ordered and keyword arguments. For example calling
 
