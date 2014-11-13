@@ -12,7 +12,7 @@ and press return. You should see
     ?Py.Str(Py.Eval("1+2"))
     3
 
-(It can happen that you get an `Object required` error - this is probably because when you press return in the Immediate Window, you must have your ExcelPython-enabled workbook selected from the VBA project list. This is because otherwise the Immediate Window statement will execute in the wrong VBA context and therefore will not be able to find the `Py` function.)
+(It can happen that you get an `Object required` error. This may happen if you do not have your ExcelPython-enabled workbook selected from the VBA project list when you press return in the Immediate Window. This is necessary because otherwise the Immediate Window statement will execute in the wrong VBA context and therefore will not be able to find the `Py` function.)
 
 You can try evaluating any Python expression, and you'll get the result
 printed in the Immediate Window.
