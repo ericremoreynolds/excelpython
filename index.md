@@ -42,6 +42,8 @@ box: |
 
 <div style="text-align: center;">Previous releases available on <a href="https://github.com/ericremoreynolds/excelpython/releases">GitHub</a>.</div>
 
+### We are pleased to announce our [one-day Python and Excel workshop](http://www.zoomeranalytics.com/training) in London on 8th December! Learn how to use ExcelPython, xlwings, spreadgit and the Python Quant Platform directly from the people who developed them.
+
 <div>
 &nbsp;
 </div>
