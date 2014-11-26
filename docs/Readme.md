@@ -22,4 +22,3 @@ If you encounter any issues in getting the add-in set up consult the [troublesho
 **Learn how to analyse the problem when something goes wrong**
 
 * [Debugging](tutorials/Debugging01.md)
-* [Troubleshooting](tutorials/Troubleshooting01.md)
