@@ -40,7 +40,7 @@ and all other size ranges have two-dimensional array values.
 Since two-dimensional tuples do not exist in Python, it gets converted to a tuple-of-tuples. Often however, you will want to pass a range as a one-dimensional tuple. Consider for example the built-in Python function `sorted`. If you call this function on the range "A1:C1" it returns the same value as is passed in:
 
 ```
-?Py.Str(Py.Call(Py.Builtins, "sorted", Py.Tuple(Range("A1:C1").Value2)))
+?Py.Str(Py.Call(Py.Builtin, "sorted", Py.Tuple(Range("A1:C1").Value2)))
 [(3.0, 1.0, 2.0)]
 ```
 
@@ -63,7 +63,7 @@ To do this, you can convert the 1x3 two-dimensional VBA array to 3-element one-d
 ```
 ?Py.Str(NDims(Range("A1:C1").Value2, 1))
 (3.0, 1.0, 2.0)
-?Py.Str(Py.Call(Py.Builtins, "sorted", Py.Tuple(NDims(Range("A1:C1").Value2, 1))))
+?Py.Str(Py.Call(Py.Builtin, "sorted", Py.Tuple(NDims(Range("A1:C1").Value2, 1))))
 [1.0, 2.0, 3.0]
 ```
 
@@ -96,7 +96,7 @@ So how do you get the value out of Python and into VBA? The key is to convert it
 or in the VBA code by calling the Python conversion function directly on the returned object:
 
 ```
-?Py.Var(Py.Call(Py.Builtins, "float", Py.Tuple(Py.Eval("norm.cdf(0.0)", locals))))
+?Py.Var(Py.Call(Py.Builtin, "float", Py.Tuple(Py.Eval("norm.cdf(0.0)", locals))))
  0.5
 ```
 
