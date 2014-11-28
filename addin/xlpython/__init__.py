@@ -100,3 +100,30 @@ def udf_script(filename):
 		exec(compile(f.read(), filename, "exec"), vars)
 	udf_scripts[filename] = (mtime, vars)
 	return vars
+	
+def generate_vba_wrapper(wb):
+	import os
+	
+	# get useful wb info and paths
+	wbFolder = wb.Path
+	wbBaseName = os.path.splitext(wb.Name)[0]
+	scriptFilename = os.path.join(wb.Path, wbBaseName + ".py")
+	vars = udf_script(scriptFilename)
+	
+	# determine temporary filename for VBA wrapper .bas file, create tmp folder if not available, etc
+	tmpFolder = os.path.join(os.path.dirname(__file__), "vba_wrappers")
+	if not os.path.isdir(tmpFolder):
+		os.mkdir(tmpFolder)
+	tmpFilename = os.path.join(tmpFolder, wbBaseName + ".bas")
+	
+	# generate wrapper
+	with open(tmpFilename, "w") as f:
+		f.write('Attribute VB_Name = "xlpython_udfs"\n')
+		for k, v in vars.items():
+			f.write(k + "\n")
+	
+	# all ok, return infos
+	return {
+		"filename": tmpFilename
+	}
+	

@@ -203,9 +203,13 @@ class XLPython(object):
 		obj[key] = value
 		
 	def DelItem(self, obj, key):
+		obj = FromVariant(obj)
+		key = FromVariant(key)
 		del obj[key]
 		
 	def Contains(self, obj, key):
+		obj = FromVariant(obj)
+		key = FromVariant(key)
 		return key in obj
 		
 	def GetAttr(self, obj, attr):
