@@ -2,6 +2,7 @@
 
 HINSTANCE hInstanceDLL;
 
+
 // DLL entry point -- only stores the module handle for later use
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -9,6 +10,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 	return TRUE;
 }
+
 
 // change the dimensionality of a VBA array
 HRESULT __stdcall XLPyDLLNDims(VARIANT* xlSource, int* xlDimension, bool *xlTranspose, VARIANT* xlDest)
@@ -131,8 +133,9 @@ HRESULT __stdcall XLPyDLLNDims(VARIANT* xlSource, int* xlDimension, bool *xlTran
 	}
 }
 
+
 // entry point - returns existing interface if already available, otherwise tries to activate it
-HRESULT __stdcall XLPyDLLActivate(VARIANT* xlResult, const char* xlConfigFileName)
+HRESULT __stdcall XLPyDLLActivate(VARIANT* xlResult, const char* xlConfigFileName, int xlActivationMode)
 {
 	try
 	{
@@ -141,17 +144,49 @@ HRESULT __stdcall XLPyDLLActivate(VARIANT* xlResult, const char* xlConfigFileNam
 		// set default config file
 		std::string configFilename = xlConfigFileName;
 		if(configFilename.empty())
-			configFilename = "xlpython.xlpy";
+			throw formatted_exception() << "No config file specified";
 		Config* pConfig = Config::GetConfig(configFilename);
 
 		// if interface object isn't already available try to create it
-		if(pConfig->pInterface == NULL || !pConfig->CheckRPCServer())
-			pConfig->ActivateRPCServer();
+		switch(xlActivationMode)
+		{
+		case -1:
+			{
+				pConfig->KillRPCServer();
+				return S_OK;
+			}
 
-		// pass it back to VBA
-		xlResult->vt = VT_DISPATCH;
-		xlResult->pdispVal = pConfig->pInterface;
-		xlResult->pdispVal->AddRef();
+		case 0:
+			{
+				if(pConfig->pInterface != NULL && pConfig->CheckRPCServer())
+				{
+					// pass it back to VBA
+					xlResult->vt = VT_DISPATCH;
+					xlResult->pdispVal = pConfig->pInterface;
+					xlResult->pdispVal->AddRef();
+					return S_OK;
+				}
+				else
+				{
+					xlResult->vt = VT_DISPATCH;
+					xlResult->pdispVal = NULL;
+					return S_OK;
+				}
+			}
+
+		case 1:
+			{
+				if(pConfig->pInterface == NULL || !pConfig->CheckRPCServer())
+					pConfig->ActivateRPCServer();
+
+				// pass it back to VBA
+				xlResult->vt = VT_DISPATCH;
+				xlResult->pdispVal = pConfig->pInterface;
+				xlResult->pdispVal->AddRef();
+
+				break;
+			}
+		}
 
 		return S_OK;
 	}
@@ -196,14 +231,33 @@ HRESULT __stdcall XLPyDLLActivateAuto(VARIANT* xlResult, const char* xlCommand)
 	}
 }
 
+
 // returns a string identifying the DLL version
-BSTR __stdcall XLPyDLLVersion()
+int __stdcall XLPyDLLVersion(BSTR* xlTag, double* xlVersion, BSTR* xlArchitecture)
 {
-	std::string version("xlwings/1/win");
-#if _WIN64;
-	version += "64";
+	std::string tag("xlpython");
+	double version = 1.0;
+
+#if _WIN64
+	std::string arch("win64");
 #else
-	version += "32";
+	std::string arch("win32");
 #endif
-	return SysAllocStringByteLen(version.c_str(), version.size());
+
+	if(xlTag != NULL)
+	{
+		SysFreeString(*xlTag);
+		*xlTag = SysAllocStringByteLen(tag.c_str(), (UINT) tag.size());
+	}
+
+	if(xlVersion != NULL)
+		*xlVersion = version;
+
+	if(xlArchitecture != NULL)
+	{
+		SysFreeString(*xlArchitecture);
+		*xlArchitecture = SysAllocStringByteLen(arch.c_str(), (UINT) arch.size());
+	}
+
+	return 1;
 }

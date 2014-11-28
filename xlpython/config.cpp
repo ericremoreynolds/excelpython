@@ -141,13 +141,8 @@ void Config::ParseConfigFile(const std::string& filename)
 
 Config::~Config()
 {
-	// release dispatch object if present
-	if(pInterface != NULL)
-		pInterface->Release();
-
-	// release the job handle if present
-	if(hJob != NULL)
-		CloseHandle(hJob);
+	// kill server, if active
+	this->KillRPCServer();
 }
 
 Config* Config::GetAutoConfig(const std::string& command)
@@ -276,6 +271,24 @@ bool Config::CheckRPCServer()
 	UINT nTypeInfo;
 	HRESULT hr = pInterface->GetTypeInfoCount(&nTypeInfo);
 	return 0x800706ba != hr;		// RPC server not available = HRESULT 0x800706ba
+}
+
+void Config::KillRPCServer()
+{
+	if(this->pInterface != NULL)
+	{
+		this->pInterface->Release();
+		this->pInterface = NULL;
+	}
+
+	if(this->hJob != NULL)
+	{
+		BOOL bSuccess = CloseHandle(this->hJob);
+		if(!bSuccess)
+			throw formatted_exception() << "CloseHandle on job object failed:" << GetLastErrorMessage();
+
+		this->hJob = NULL;
+	}
 }
 
 void Config::ActivateRPCServer()

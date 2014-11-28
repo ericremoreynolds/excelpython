@@ -32,6 +32,7 @@ public:
 
 	bool CheckRPCServer();
 	void ActivateRPCServer();
+	void KillRPCServer();
 
 	IDispatch* pInterface;
 	ValueMap values;
