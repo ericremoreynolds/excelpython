@@ -224,8 +224,7 @@ Sub ImportPythonUDFs(control As IRibbonControl)
             End If
             
             If Py.Bool(Py.GetItem(xlfunc, "xlwings")) Then
-                f.WriteLine sTab + "Py.SetAttr Py.GetAttr(Py.Module(""xlwings""), ""xlplatform""), ""xl_app_latest"", Application"
-                f.WriteLine sTab + "Py.SetAttr Py.Module(""xlwings.main""), ""xl_workbook_latest"", ThisWorkbook"
+                f.WriteLine sTab + "Py.SetAttr Py.Module(""xlwings._xlwindows""), ""xl_workbook_current"", ThisWorkbook"
             End If
             
             f.WriteLine sTab + "Set xlpy = Py.Module(""xlpython"")"
