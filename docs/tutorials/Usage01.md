@@ -1,7 +1,7 @@
 A very simple usage example
 ---
 
-You can try out xlpython from the VBA Immediate Window (Ctrl + G if it's not already visible in the VBA window).
+You can try out ExcelPython from the VBA Immediate Window (Ctrl + G if it's not already visible in the VBA window).
 
 Type the following
 
@@ -11,6 +11,8 @@ and press return. You should see
 
     ?Py.Str(Py.Eval("1+2"))
     3
+
+(It can happen that you get an `Object required` error. This may happen if you do not have your ExcelPython-enabled workbook selected from the VBA project list when you press return in the Immediate Window. This is necessary because otherwise the Immediate Window statement will execute in the wrong VBA context and therefore will not be able to find the `Py` function.)
 
 You can try evaluating any Python expression, and you'll get the result
 printed in the Immediate Window.

@@ -35,7 +35,11 @@ from xlpython import *
 
 # Add these two lines
 import ptvsd
-ptvsd.enable_attach(secret='cows')
+try:
+	ptvsd.enable_attach(secret='cows')
+except ptvsd.AttachAlreadyEnabledError:
+	pass
+
 
 @xlfunc
 def DoubleSum(x, y):
@@ -43,6 +47,8 @@ def DoubleSum(x, y):
 ```
 
 These to lines enable us to attach the Visual Studio debugger to the Python script, so that we can debug it. Note that the Python process itself must be running for this to work, and ExcelPython does not launch it until it is needed - so just to make sure that it is running and that the `Book1.py` script is loaded, click 'Import Python UDFs'.
+
+(Note: the `try ... except` clause is needed because if `enable_attach` is called twice PTVS will complain that it's already been called. Since we have no way of controlling if it's already been called (for example if the script is reloaded, or if it is called in a different script) we catch the error and ignore it, as recommended in the PTVS documentation.)
 
 At this point you may need to unblock a port on the Windows firewall:
 
