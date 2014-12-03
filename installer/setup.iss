@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ExcelPython"
-#define MyAppVersion "2.0.7"
+#define MyAppVersion "2.0.8"
 #define MyAppPublisher "ericremoreynolds"
 #define MyAppURL "https://github.com/ericremoreynolds/excelpython"
 
@@ -23,8 +23,8 @@ OutputBaseFilename=excelpython-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 DefaultDirName={code:DefAppFolder}
-UninstallFilesDir={pf}\ExcelPython
-
+UninstallFilesDir={userappdata}\ExcelPython
+PrivilegesRequired=lowest
 DirExistsWarning=no
 
 [Languages]
@@ -36,8 +36,6 @@ Name: "{app}\xlpython"
 [Files]
 Source: "..\addin\xlpython.xlam"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\addin\xlpython\*"; DestDir: "{app}\xlpython"; Flags: ignoreversion recursesubdirs createallsubdirs
-; Source: IssProc.dll; DestDir: "{tmp}"; Flags: dontcopy
-; Source: IssProc.dll; DestDir: "{pf}\ExcelPython"
 
 [Code]
 Function DefAppFolder(Param: String): String;
@@ -81,9 +79,23 @@ Var
   FileHandle: THandle;
 Begin
   Result := False;
-  FileHandle := CreateFile(FileName, GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  Result := (FileHandle <> INVALID_HANDLE_VALUE);
-  If Result Then CloseHandle(FileHandle);
+  If Not FileExists(FileName) Then Begin
+    Result := True;
+  End Else Begin
+    FileHandle := CreateFile(FileName, GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    Result := (FileHandle <> INVALID_HANDLE_VALUE);
+    If Result Then CloseHandle(FileHandle);
+  End;
+End;
+
+Function InitializeSetup(): Boolean;
+Begin
+  If CanDelete(DefAppFolder('') + '\xlpython.xlam') Then Begin
+    Result := true;
+  End Else Begin
+    MsgBox('ExcelPython appears to be in use - please make sure you close all instances of Excel before proceeding.', mbError, MB_OK)
+    Result := false;
+  End;
 End;
 
 // Ensure that the add-in can be deleted
@@ -93,8 +105,56 @@ begin
   If CanDelete(ExpandConstant('{app}\xlpython.xlam')) Then Begin
     Result := true;
   End Else Begin
-    MsgBox('ExcelPython appears to be in use - please make sure you close all instances of Excel before uninstalling.', mbError, MB_OK)
+    MsgBox('ExcelPython appears to be in use - please make sure you close all instances of Excel before proceeding.', mbError, MB_OK)
     Result := false;
   End;
 end;
+
+/////////////////////////////////////////////////////////////////////
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+
+/////////////////////////////////////////////////////////////////////
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+/////////////////////////////////////////////////////////////////////
+Procedure CurStepChanged(CurStep: TSetupStep);
+Begin
+  If (CurStep=ssInstall) Then Begin
+    UnInstallOldVersion();
+  End;
+End;
 
