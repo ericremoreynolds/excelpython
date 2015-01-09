@@ -34,7 +34,7 @@ box: |
 </div>
 
 
-<div style="text-align: center;"><a href="https://github.com/ericremoreynolds/excelpython/releases/download/v2.0.7/excelpython-2.0.7.exe" class="btn btn-success"><span class="glyphicon glyphicon-download-alt"></span> Download the latest release (v2.0.7)</a></div>
+<div style="text-align: center;"><a href="https://github.com/ericremoreynolds/excelpython/releases/download/v2.0.8.pre/excelpython-2.0.8.exe" class="btn btn-success"><span class="glyphicon glyphicon-download-alt"></span> Download the latest release (v2.0.8)</a></div>
 
 <div>
 &nbsp;
