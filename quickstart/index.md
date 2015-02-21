@@ -9,7 +9,7 @@ title: "Quickstart"
 
 The easiest way to install ExcelPython is using the Windows installer for the latest release on [GitHub][].
 
-ExcelPython requires Excel (&ge; 2003) and Python (&ge; 2.6) to be installed on the PC, as well as [PyWin32][].
+ExcelPython requires Excel (&ge; 2007) and Python (&ge; 2.6) to be installed on the PC, as well as [PyWin32][].
 
 We recommend installing [Anaconda Python][] as your default Python distribution, which comes ready packed with PyWin32 as well as lots of other essential Python libraries.
 
