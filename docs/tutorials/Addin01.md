@@ -36,7 +36,7 @@ Next write your user-defined function in Python. In the previous step ExcelPytho
 
 * Switch back to Excel and click 'Import Python UDFs' in the ExcelPython tab to pick up the changes made to `Book1.py`.
 
-* Enter the formula `=DoubleSum(1, 2)` into a cell and you should get the correct result:
+* Enter the formula `=DoubleSum(1; 2)` into a cell and you should get the correct result:
 
     ![image](https://cloud.githubusercontent.com/assets/5197585/3917596/e5365b3c-238e-11e4-8bce-0d97caceca2e.png)
     
