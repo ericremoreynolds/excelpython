@@ -158,3 +158,24 @@ public:
 		return handle;
 	}
 };
+
+class AutoCloseHKey
+{
+public:
+	HKEY hKey;
+
+	AutoCloseHKey(const HKEY& hKey)
+	{
+		this->hKey = hKey;
+	}
+
+	~AutoCloseHKey()
+	{
+		::RegCloseKey(this->hKey);
+	}
+
+	operator HKEY ()
+	{
+		return this->hKey;
+	}
+};

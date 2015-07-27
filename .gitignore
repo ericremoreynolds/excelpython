@@ -1,5 +1,3 @@
-Debug/
-Release/
 *.suo
 *.user
 *.opensdf
@@ -8,3 +6,5 @@ Release/
 *.pyc
 *.dll
 /installer/*.exe
+Win32
+x64

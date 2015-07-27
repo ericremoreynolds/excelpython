@@ -56,6 +56,112 @@ void AddEnvironmentVariables(Config::ValueMap& values)
 	}
 }
 
+#define MAX_KEY_LENGTH 255
+#define MAX_VALUE_NAME 16383
+
+void AddPythonRegistryInfo(Config::ValueMap& values)
+{
+	AutoCloseHKey hKeyPythonCore(NULL);
+	HKEY hRootKeys[] = {
+		HKEY_LOCAL_MACHINE,
+		HKEY_CURRENT_USER,
+	};
+
+	for (int iRootKey = 0; iRootKey < 2; iRootKey++)
+	{
+		DWORD nSubKeys = 0;
+		DWORD hRes = 0;
+		int pyMinor[] = { -1, -1, -1, -1 };
+
+		hRes = ::RegOpenKeyExA(
+			hRootKeys[iRootKey],
+			"Software\\Python\\PythonCore",
+			0,
+			KEY_READ,
+			&(hKeyPythonCore.hKey)
+		);
+
+		if (ERROR_SUCCESS == hRes)
+		{
+			hRes = ::RegQueryInfoKeyA(
+				hKeyPythonCore,
+				NULL, 0,
+				NULL,
+				&nSubKeys,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL
+			);
+
+			if (ERROR_SUCCESS != hRes)
+				continue;
+
+			for (DWORD iSubKey = 0; iSubKey < nSubKeys; iSubKey++)
+			{
+				char pName[255];
+				DWORD nBytesName = 255;
+
+				hRes = ::RegEnumKeyExA(
+					hKeyPythonCore,
+					iSubKey,
+					pName,
+					&nBytesName,
+					NULL,
+					NULL,
+					NULL,
+					NULL
+				);
+
+				if (ERROR_SUCCESS != hRes)
+					continue;
+
+				if (strlen(pName) >= 3 && (pName[0] == '2' || pName[0] == '3') && pName[1] == '.')
+				{
+					int major = pName[0] == '2' ? 2 : 3;
+					int minor = atoi(pName + 2);
+
+					if (minor == 0)
+						continue;
+
+					strcat_s(pName, 255, "\\InstallPath");
+
+					char pFolderPath[MAX_PATH];
+					LONG nBytesFolderPath = MAX_PATH;
+
+					hRes = ::RegQueryValueA(
+						hKeyPythonCore,
+						pName,
+						pFolderPath,
+						&nBytesFolderPath
+					);
+
+					if (ERROR_SUCCESS != hRes)
+						continue;
+
+					char pConfigName[255];
+					if (-1 != sprintf_s(pConfigName, 255, "Registry:Python%i%iFolder", major, minor))
+					{
+						values[pConfigName] = pFolderPath;
+					}
+
+					if (minor > pyMinor[major])
+					{
+						if (-1 != sprintf_s(pConfigName, 255, "Registry:Python%iFolder", major))
+						{
+							values[pConfigName] = pFolderPath;
+						}
+						pyMinor[major] = minor;
+					}
+				}
+			}
+		}
+	}
+}
+
 Config::Config(const std::string& filename)
 	: pInterface(NULL)
 	, hJob(NULL)
@@ -74,6 +180,7 @@ Config::Config(const std::string& filename)
 		values["WorkbookDir"] = workbookDirOut;
 	}
 	AddEnvironmentVariables(values);
+	AddPythonRegistryInfo(values);
 
 	GUID guid;
 	NewGUID(guid);
@@ -111,10 +218,21 @@ Config::Config(const std::string& filename)
 			
 			std::string macro = value.substr(itMacroStart + 2, itMacroEnd - itMacroStart - 2);
 			std::string macroValue;
+			bool macroTrailSlash = false;
+			if (macro.length() > 0 && macro[macro.length() - 1] == '\\')
+			{
+				macroTrailSlash = true;
+				macro = macro.substr(0, macro.length() - 1);
+			}
 			if(macro.length() > 0 && macro[0] == '?')
 				macroValue = GetValue(macro.substr(1), "");
 			else
 				macroValue = GetValue(macro);
+			if (macroTrailSlash)
+			{
+				if (macroValue.length() > 0 && macroValue[macroValue.length() - 1] != '\\')
+					macroValue += "\\";
+			}
 			value = value.replace(itMacroStart, itMacroEnd - itMacroStart + 1, macroValue);
 		}
 
@@ -153,6 +271,8 @@ Config* Config::GetConfig(const std::string& filename)
 		if(-1 == CompareFileTime(&it->second->ftLastModify, &ftLastModify))
 		{
 			delete it->second;
+			configs.erase(it);
+
 			Config* c;
 			configs[fullpath] = c = new Config(fullpath);
 			return c;
