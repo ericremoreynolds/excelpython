@@ -14,7 +14,7 @@ To specify that the Python distribution in `%SOMEFOLDER%\MatrixAlgebra\PortableP
 
     Command = $(WorkbookDir)\PortablePython\pythonw.exe -u "$(ConfigDir)\xlpyserver.py" $(CLSID)
 
-## Using the default Python installation
+## Using the registered default Python X.Y installation
 
 Macros are available providing the folder of each Python version installed and registered as the default installation for that version, as stored in the Windows registry.
 
