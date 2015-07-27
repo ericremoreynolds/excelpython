@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ExcelPython"
-#define MyAppVersion "2.0.8"
+#define MyAppVersion "2.0.9"
 #define MyAppPublisher "ericremoreynolds"
 #define MyAppURL "https://github.com/ericremoreynolds/excelpython"
 
@@ -17,8 +17,8 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-LicenseFile=D:\github\excelpython\LICENSE
-OutputDir=D:\github\excelpython\installer
+LicenseFile=..\LICENSE
+OutputDir=.
 OutputBaseFilename=excelpython-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
