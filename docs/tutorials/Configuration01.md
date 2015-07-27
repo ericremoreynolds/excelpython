@@ -18,7 +18,7 @@ To specify that the Python distribution in `%SOMEFOLDER%\MatrixAlgebra\PortableP
 
 Macros are available providing the folder of each Python version installed and registered as the default installation for that version, as stored in the Windows registry.
 
-These take the form `$(Registry:PythonXYFolder)` where `X` is the major version and `Y` is the minor version (for example for Python 2.6 `$(Registry:Python26Folder)`). The installation path is read from `HKCU\Software\Python\PythonCore\X.Y\InstallPath`.
+These take the form `$(Registry:PythonXYFolder)` where `X` is the major version and `Y` is the minor version (for example for Python 2.6 `$(Registry:Python26Folder)`). The installation path is read from `HKCU\Software\Python\PythonCore\X.Y\InstallPath` or, if not present, the equivalent key in `HKLM`.
 
 Minor version agnostic macros are also available: `$(Registry:Python2Folder)` and `$(Registry:Python3Folder)`. They are equal to the folder of the installation with the greatest minor version. For example if Python 2.6 and Python 2.7 are both installed and registered, `$(Registry:Python2Folder)` is equal to the installation folder of the default Python 2.7.
 
