@@ -1,3 +1,5 @@
+***Notice*** : ExcelPython has been integrated into [xlwings](https://github.com/ZoomerAnalytics/xlwings)! Going forwards ExcelPython will be no longer be actively maintained and any further development work will take place within the context of `xlwings`.
+
 # ExcelPython v2
 
 Write Excel user-defined functions and macros in Python!
